@@ -91,6 +91,13 @@ body{font-family:KMR,"Noto Sans Arabic","Geeza Pro",sans-serif;color:#fdf9f4;dis
 .prow{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid rgba(253,249,244,.14);font-size:14px}
 .prow:last-child{border:0}.prow span:first-child{color:rgba(253,249,244,.6)}
 .prow.lk{cursor:pointer;color:#f5b72e}
+.tg{width:46px;height:26px;border-radius:13px;background:rgba(253,249,244,.25);position:relative;flex:none;cursor:pointer}
+.tg:after{content:"";position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:#fdf9f4;transition:.2s}
+.tg.on{background:#d9a441}.tg.on:after{right:23px;background:#1a100a}
+.bk{color:#f5b72e;font-size:13px;margin-bottom:12px;cursor:pointer}
+.ord{border-top:1px dashed rgba(253,249,244,.3);padding:12px 0;font-size:13.5px;line-height:1.9}
+.ord em{font-style:normal;font-size:10px;color:rgba(253,249,244,.6);border:1px dashed rgba(253,249,244,.35);border-radius:6px;padding:1px 6px;margin-inline-start:6px}
+.cl{display:flex;gap:8px;margin-top:6px}.cl a{flex:1;text-align:center;text-decoration:none;border:1px solid #d9a441;color:#f5b72e;border-radius:10px;padding:9px 0;font-size:13px}
 </style>
 </head>
 <body>
@@ -136,6 +143,7 @@ function doSignIn(){var n=document.getElementById("un").value.trim(),p=document.
 if(!n){e.textContent="الرجاء إدخال الاسم";return}
 if(!/^05\d{8}$/.test(p)){e.textContent="الرجاء إدخال رقم جوال صحيح من ١٠ أرقام يبدأ بـ 05";return}
 S.u={n:n,p:p};save();render()}
+function tgl(){S.nt=!S.nt;save();render()}
 function signOut(){S.u=null;save();render()}
 function render(){var r=route(),v=document.getElementById("view"),h="",a=r[0];
 if(a=="home"||a==""){
@@ -150,7 +158,13 @@ else{h=hd("السلة")+sel()+'<div class="card">'+ids.map(function(k){var d=D(k
 a="cart"}
 else if(a=="account"){
 if(!S.u){h=hd("تسجيل الدخول")+'<label class="fld">الاسم<input id="un" type="text" autocomplete="off"></label><label class="fld">رقم الجوال<input id="up" type="tel" inputmode="numeric" placeholder="05XXXXXXXX" autocomplete="off"></label><div class="err" id="ue"></div><button class="btn" onclick="doSignIn()">تسجيل الدخول</button><div class="mockn">نموذج تجريبي: لا يوجد حساب حقيقي ولا رمز تحقق. الاسم والرقم يُحفظان على هذا الجهاز فقط.</div>'}
-else{h=hd("حسابي")+'<div class="card"><div class="prow"><span>الاسم</span><span>'+S.u.n.replace(/</g,"&lt;")+'</span></div><div class="prow"><span>رقم الجوال</span><span dir="ltr">'+S.u.p+'</span></div><div class="prow lk" onclick="go(\'home\')"><span class="gold">بطاقة الولاء</span><span>‹</span></div></div><div class="mockn">نموذج تجريبي: البيانات محفوظة على هذا الجهاز فقط ولا تُرسل لأي جهة.</div><button class="btn o" onclick="signOut()">تسجيل الخروج</button>'}
+else{h=hd("حسابي")+'<div class="card"><div class="prow"><span>الاسم</span><span>'+S.u.n.replace(/</g,"&lt;")+'</span></div><div class="prow"><span>رقم الجوال</span><span dir="ltr">'+S.u.p+'</span></div></div><div class="card" style="margin-top:12px"><div class="prow lk" onclick="go(\'orders\')"><span class="gold">طلباتي</span><span>‹</span></div><div class="prow lk" onclick="go(\'home\')"><span class="gold">بطاقة الولاء</span><span>‹</span></div><div class="prow"><span class="gold" style="color:#fdf9f4">الإشعارات</span><span class="tg '+(S.nt?"on":"")+'" onclick="tgl()"></span></div><div class="prow"><span style="color:#fdf9f4">اللغة</span><span>العربية</span></div><div class="prow lk" onclick="go(\'privacy\')"><span class="gold">سياسة الخصوصية</span><span>‹</span></div><div class="prow lk" onclick="go(\'contact\')"><span class="gold">تواصل معنا</span><span>‹</span></div><div class="prow lk" onclick="go(\'about\')"><span class="gold">عن التطبيق</span><span>‹</span></div></div><div class="mockn">نموذج تجريبي: كل هذه الشاشات للعرض فقط، والبيانات محفوظة على هذا الجهاز فقط ولا تُرسل لأي جهة.</div><button class="btn o" onclick="signOut()">تسجيل الخروج</button>'}
+a="account"}
+else if(a=="orders"||a=="privacy"||a=="contact"||a=="about"){var B='<div class="bk" onclick="go(\'account\')">› رجوع</div>';
+if(a=="orders")h=hd("طلباتي")+B+'<div class="card" style="padding:14px"><div class="empty" style="padding:20px 0">لا توجد طلبات سابقة</div><div class="ord"><b>طلب رقم ٠٠٠١</b><em>مثال توضيحي</em><br>'+D(2).n+' × ١<br>'+D(7).n+' × ٢<br>'+BR.y.n+' · — ر.س</div></div><div class="mockn">نموذج تجريبي: الطلب أعلاه مثال للعرض فقط وليس طلباً حقيقياً. لا يوجد حفظ فعلي للطلبات حالياً.</div>';
+else if(a=="privacy")h=hd("سياسة الخصوصية")+B+'<div class="card" style="padding:14px;font-size:13.5px;line-height:1.9">نص سياسة الخصوصية يُضاف لاحقاً بعد اعتماده من المطعم.</div><div class="mockn">نموذج تجريبي: هذا مكان مخصص للنص الرسمي ولا يحتوي على أي سياسة فعلية.</div>';
+else if(a=="contact")h=hd("تواصل معنا")+B+Object.keys(BR).map(function(k){var b=BR[k];return '<div class="br" style="cursor:default"><h4>'+b.n+'</h4><p>'+b.a+'</p><p dir="ltr" style="text-align:right">'+b.p+'</p><div class="cl"><a href="tel:'+b.p+'">اتصال</a><a href="https://wa.me/'+b.w+'">واتساب</a></div></div>'}).join("")+'<div class="gold" style="font-size:12.5px;text-align:center">'+HOURS+'</div>';
+else h=hd("عن التطبيق")+B+'<div class="card" style="padding:14px;font-size:13.5px;line-height:1.9">تطبيق منتو اكسبرس، الرياض.<br>'+HOURS+'</div><div class="mockn">نموذج تجريبي (مسودة) لعرض الفكرة فقط وليس النسخة النهائية.</div>';
 a="account"}
 else if(a=="branch"){h=hd("اختر الفرع")+Object.keys(BR).map(function(k){var b=BR[k];return '<div class="br '+(S.br==k?"on":"")+'" onclick="pick(\''+k+'\')"><h4>'+b.n+' <span class="radio"></span></h4><p>'+b.a+'</p><p>'+b.p+'</p><p class="gold">'+HOURS+'</p></div>'}).join("");a="branch"}
 v.innerHTML=h;document.getElementById("tabs").innerHTML=tabs(a);v.scrollTop=0}
