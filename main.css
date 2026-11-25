@@ -5204,4 +5204,25 @@ body {
     transition: none;
   }
 }
+.mentu-reviews {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 2px 2px 14px;
+  align-items: flex-start;
+}
+.mentu-review-item {
+  flex: 0 0 92%;
+  max-width: 620px;
+  scroll-snap-align: center;
+}
+.mentu-review-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 15px;
+}
+
 /*! tailwindcss v3.4.19 | MIT License | https://tailwindcss.com*/
