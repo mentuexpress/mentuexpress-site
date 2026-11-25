@@ -82,6 +82,15 @@ body{font-family:KMR,"Noto Sans Arabic","Geeza Pro",sans-serif;color:#fdf9f4;dis
 .loy .lr{font-size:12px;line-height:1.7;color:rgba(253,249,244,.78)}
 .freen{background:rgba(217,164,65,.14);border:1px solid #d9a441;border-radius:14px;padding:12px 14px;margin-bottom:12px;font-size:13px;line-height:1.7}
 .freen b{color:#f5b72e}
+.fld{display:block;margin-bottom:14px;font-size:12.5px;color:rgba(253,249,244,.7)}
+.fld input{display:block;width:100%;margin-top:6px;height:48px;border-radius:12px;border:1px solid rgba(253,249,244,.28);background:rgba(253,249,244,.08);color:#fdf9f4;font-size:16px;font-family:inherit;padding:0 12px;direction:rtl}
+.mockn{font-size:11.5px;line-height:1.7;color:rgba(253,249,244,.65);border:1px dashed rgba(253,249,244,.3);border-radius:12px;padding:10px 12px;margin:14px 0}
+.btn{display:block;width:100%;height:50px;border-radius:14px;border:0;background:#d9a441;color:#1a100a;font-weight:700;font-size:15px;font-family:inherit;margin-top:6px}
+.btn.o{background:none;border:1px solid #d9a441;color:#f5b72e}
+.err{color:#ff8a7a;font-size:12px;min-height:18px;margin-bottom:6px}
+.prow{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid rgba(253,249,244,.14);font-size:14px}
+.prow:last-child{border:0}.prow span:first-child{color:rgba(253,249,244,.6)}
+.prow.lk{cursor:pointer;color:#f5b72e}
 </style>
 </head>
 <body>
@@ -103,7 +112,7 @@ var CATS=[{k:"h",t:"الحجازيات",d:1},{k:"b",t:"البف",d:8},{k:"m",t:"
 var BR={y:{n:"فرع حي اليرموك",a:"الرياض، حي اليرموك، شارع النجاح",p:"0551296445",w:"966551296445"},
 a:{n:"فرع حي العقيق",a:"الرياض، حي العقيق، شارع السليمانية",p:"0509404366",w:"966509404366"}};
 var HOURS="يومياً من ١ ظهراً حتى ١ صباحاً";
-var S=JSON.parse(localStorage.getItem("mentu_app")||'{"cart":{},"br":null}');
+var S=JSON.parse(localStorage.getItem("mentu_app")||'{"cart":{},"br":null,"u":null}');
 function save(){localStorage.setItem("mentu_app",JSON.stringify(S))}
 var D=function(id){return DISHES.filter(function(x){return x.id==id})[0]};
 var PR='<span class="pr">— ر.س <em>سعر لاحقاً</em></span>';
@@ -112,7 +121,7 @@ function count(){var t=0;for(var k in S.cart)t+=S.cart[k];return t}
 function addCart(id,q){S.cart[id]=(S.cart[id]||0)+(q||1);save();render()}
 function route(){return (location.hash||"#home").slice(1).split("/")}
 function go(h){location.hash=h}
-function tabs(a){var t=[["home","⌂","الرئيسية"],["menu/b","▦","المنيو"],["cart","▤","السلة"],["branch","◎","الفروع"]];
+function tabs(a){var t=[["home","⌂","الرئيسية"],["menu/b","▦","المنيو"],["cart","▤","السلة"],["branch","◎","الفروع"],["account","☺","حسابي"]];
 return t.map(function(x){var on=a==x[0].split("/")[0];return '<div class="'+(on?"a":"")+'" onclick="go(\''+x[0]+'\')"><u>'+x[1]+'</u>'+x[2]+(x[0]=="cart"&&count()?'<span class="cnt">'+AR(count())+'</span>':'')+'</div>'}).join("")}
 function hd(t){return '<div class="top"><div class="title">'+t+'</div><div class="badge">مسودة</div></div><div class="uline"></div>'}
 function sel(){var b=S.br?BR[S.br].n:"اختر الفرع";return '<div class="sel" onclick="go(\'branch\')"><div><small>الطلب من</small>'+b+'</div><span class="gold">'+(S.br?"تغيير":"اختيار")+' ▾</span></div>'}
@@ -123,6 +132,11 @@ var LOY=(location.search.match(/loy=(\d)/)||[0,3])[1]*1;
 function loyCard(){var st="";for(var i=1;i<=5;i++)st+='<i class="'+(i<=LOY?"f":"")+'">'+AR(i)+'</i>';
 return '<div class="loy"><div class="lh"><span>بطاقة الولاء</span><em>تجريبي</em></div><div class="steps">'+st+'</div><div class="lc">'+(LOY>=5?'طلبك القادم مجاني':AR(LOY)+' من ٥ طلبات')+'</div><div class="lr">كل طلب عبر التطبيق بقيمة أكثر من ٥٠ ريال يُحتسب في البطاقة. بعد ٥ طلبات يكون الطلب السادس مجانياً بقيمة حتى ٥٠ ريال، وما زاد على ذلك يدفعه العميل.</div></div>'}
 function freeNote(){return LOY>=5?'<div class="freen"><b>هذا الطلب هو الطلب المجاني</b><br>القيمة المجانية حتى ٥٠ ريال، وما زاد على ذلك يدفعه العميل.</div>':''}
+function doSignIn(){var n=document.getElementById("un").value.trim(),p=document.getElementById("up").value.replace(/\s/g,"");var e=document.getElementById("ue");
+if(!n){e.textContent="الرجاء إدخال الاسم";return}
+if(!/^05\d{8}$/.test(p)){e.textContent="الرجاء إدخال رقم جوال صحيح من ١٠ أرقام يبدأ بـ 05";return}
+S.u={n:n,p:p};save();render()}
+function signOut(){S.u=null;save();render()}
 function render(){var r=route(),v=document.getElementById("view"),h="",a=r[0];
 if(a=="home"||a==""){
 h=hd("منتو اكسبرس")+sel()+loyCard()+'<div class="sec"><b>الأقسام</b></div><div class="cats">'+CATS.map(function(c){return '<div class="cat" onclick="go(\'menu/'+c.k+'\')"><img src="/'+D(c.d).i+'">'+c.t+'</div>'}).join("")+'</div><div class="sec"><b>أطباقنا</b><span class="gold" style="font-size:12.5px" onclick="go(\'menu/h\')">عرض الكل</span></div><div class="grid">'+[2,3].map(function(i){return card(D(i))}).join("")+'</div>';a="home"}
@@ -134,6 +148,10 @@ else if(a=="cart"){var ids=Object.keys(S.cart).filter(function(k){return S.cart[
 if(!ids.length){h=hd("السلة")+'<div class="empty">السلة فارغة<br><br><span class="gold" onclick="go(\'menu/h\')">تصفح المنيو</span></div>'}
 else{h=hd("السلة")+sel()+'<div class="card">'+ids.map(function(k){var d=D(k);return '<div class="ci"><img src="/'+d.i+'"><div class="n">'+d.n+'<br>'+PR+'</div><div class="q"><button onclick="cq('+k+',1)">+</button><b>'+AR(S.cart[k])+'</b><button onclick="cq('+k+',-1)">−</button></div></div>'}).join("")+'</div><div class="card" style="margin-top:12px"><div class="tot"><span>المجموع</span><span>— ر.س</span></div><div class="tot b"><span>الإجمالي</span><span>— ر.س</span></div></div>'+freeNote()+'<div class="note2">الأسعار تضاف لاحقاً · الطلب يصل إلى واتساب الفرع</div><button class="cta wa" onclick="send()"><span>إرسال الطلب عبر واتساب</span><span>✆</span></button>'}
 a="cart"}
+else if(a=="account"){
+if(!S.u){h=hd("تسجيل الدخول")+'<label class="fld">الاسم<input id="un" type="text" autocomplete="off"></label><label class="fld">رقم الجوال<input id="up" type="tel" inputmode="numeric" placeholder="05XXXXXXXX" autocomplete="off"></label><div class="err" id="ue"></div><button class="btn" onclick="doSignIn()">تسجيل الدخول</button><div class="mockn">نموذج تجريبي: لا يوجد حساب حقيقي ولا رمز تحقق. الاسم والرقم يُحفظان على هذا الجهاز فقط.</div>'}
+else{h=hd("حسابي")+'<div class="card"><div class="prow"><span>الاسم</span><span>'+S.u.n.replace(/</g,"&lt;")+'</span></div><div class="prow"><span>رقم الجوال</span><span dir="ltr">'+S.u.p+'</span></div><div class="prow lk" onclick="go(\'home\')"><span class="gold">بطاقة الولاء</span><span>‹</span></div></div><div class="mockn">نموذج تجريبي: البيانات محفوظة على هذا الجهاز فقط ولا تُرسل لأي جهة.</div><button class="btn o" onclick="signOut()">تسجيل الخروج</button>'}
+a="account"}
 else if(a=="branch"){h=hd("اختر الفرع")+Object.keys(BR).map(function(k){var b=BR[k];return '<div class="br '+(S.br==k?"on":"")+'" onclick="pick(\''+k+'\')"><h4>'+b.n+' <span class="radio"></span></h4><p>'+b.a+'</p><p>'+b.p+'</p><p class="gold">'+HOURS+'</p></div>'}).join("");a="branch"}
 v.innerHTML=h;document.getElementById("tabs").innerHTML=tabs(a);v.scrollTop=0}
 function qd(x){dq=Math.max(1,dq+x);document.getElementById("qn").textContent=AR(dq)}
