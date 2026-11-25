@@ -5212,6 +5212,11 @@ body {
   -webkit-overflow-scrolling: touch;
   padding: 2px 2px 14px;
   align-items: flex-start;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+.mentu-reviews::-webkit-scrollbar {
+  display: none;
 }
 .mentu-review-item {
   flex: 0 0 92%;
