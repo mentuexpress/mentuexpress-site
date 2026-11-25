@@ -12445,7 +12445,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   var storefront_default = "./DQKVVB5P.jpg";
 
   // src/photos/mantu-scene.jpg
-  var mantu_scene_default = "./app/AP01b.jpg";
+  var mantu_scene_default = "./YA4VFQRS.jpg";
 
   // src/photos/farmoza-scene.jpg
   var farmoza_scene_default = "./ZY5ZJ7I5.jpg";
@@ -12492,7 +12492,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   // src/App.tsx
   var import_jsx_runtime27 = __toESM(require_jsx_runtime());
   var dishes = [
-    { photo: mantu_scene_default, w: 900, h: 900, alt: "\u0635\u062D\u0646 \u0645\u0646\u062A\u0648 \u062D\u062C\u0627\u0632\u064A \u0628\u0627\u0644\u0644\u062D\u0645" },
+    { photo: mantu_scene_default, w: 1e3, h: 667, alt: "\u0635\u062D\u0646 \u0645\u0646\u062A\u0648 \u062D\u062C\u0627\u0632\u064A \u0628\u0627\u0644\u0644\u062D\u0645" },
     { photo: farmoza_scene_default, w: 1e3, h: 667, alt: "\u0641\u0631\u0645\u0648\u0632\u0629 \u062D\u062C\u0627\u0632\u064A\u0629 \u0628\u0627\u0644\u0633\u0645\u0633\u0645" },
     { photo: yaghmash_default, w: 1e3, h: 914, alt: "\u064A\u063A\u0645\u0634 \u062D\u062C\u0627\u0632\u064A" },
     { photo: tabaq_default, w: 1e3, h: 1e3, alt: "\u0637\u0628\u0642 \u062D\u062C\u0627\u0632\u064A \u0645\u0634\u0643\u0644" },
