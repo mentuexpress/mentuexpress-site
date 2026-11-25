@@ -12516,7 +12516,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   ];
   function Reveal({ children }) {
     const ref = (0, import_react30.useRef)(null);
-    const [pending, setPending] = (0, import_react30.useState)(false);
+    const [pending, setPending] = (0, import_react30.useState)(() => typeof IntersectionObserver !== "undefined" && !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches));
     (0, import_react30.useEffect)(() => {
       const el2 = ref.current;
       if (!el2 || typeof IntersectionObserver === "undefined") return;
