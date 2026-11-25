@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>منتو اكسبرس</title>
+<meta name="theme-color" content="#140c07">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="منتو اكسبرس">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="/app/icon-180.png">
+<link rel="icon" href="/app/icon-180.png">
+<link rel="manifest" href="/app/manifest.webmanifest">
+<style>
+@font-face{font-family:Aime;src:url(/RK4X2PXO.woff2)}
+@font-face{font-family:KMR;src:url(/EDUFJISK.woff2)}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#140c07}
+body{font-family:KMR,"Noto Sans Arabic","Geeza Pro",sans-serif;color:#fdf9f4;display:flex;justify-content:center}
+#app{position:relative;width:100%;max-width:430px;height:100dvh;overflow:hidden;background:linear-gradient(rgba(20,12,7,.86),rgba(20,12,7,.93)),url(/G4MONFL2.jpg) center/300px}
+#view{position:absolute;inset:0;overflow-y:auto;padding:calc(env(safe-area-inset-top) + 16px) 18px calc(110px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
+.top{display:flex;justify-content:space-between;align-items:center}
+.title{font-family:Aime,"Noto Sans Arabic";font-size:26px}
+.badge{font-size:11px;border:1px solid #d9a441;color:#f5b72e;border-radius:99px;padding:4px 10px}
+.uline{width:46px;height:3px;background:#d9a441;border-radius:2px;margin:6px 0 16px}
+.gold{color:#f5b72e}
+.sel{background:rgba(24,15,9,.6);border:1px solid rgba(253,249,244,.2);border-radius:14px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;font-size:14px;margin-bottom:16px;cursor:pointer}
+.sel small{display:block;color:rgba(253,249,244,.6);font-size:11.5px}
+.sec{display:flex;justify-content:space-between;font-size:15px;margin:4px 0 10px}
+.cats{display:flex;gap:12px;margin:6px 0 18px}
+.cat{flex:1;text-align:center;font-size:12.5px;cursor:pointer}
+.cat img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:50%;border:2px solid #d9a441;display:block;margin-bottom:6px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dish{position:relative;border-radius:14px;overflow:hidden;border:1px solid rgba(253,249,244,.16);background:rgba(24,15,9,.6);cursor:pointer}
+.dish img{display:block;width:100%;aspect-ratio:1;object-fit:cover}
+.dish b{display:block;padding:8px 10px 2px;font-size:13px;font-weight:600}
+.pr{display:block;padding:0 10px 10px;font-size:12px;color:#f5b72e}
+.pr em{font-style:normal;font-size:10px;color:rgba(253,249,244,.5);border:1px dashed rgba(253,249,244,.35);border-radius:6px;padding:1px 5px;margin-inline-start:4px}
+.add{position:absolute;left:8px;bottom:8px;width:32px;height:32px;border:0;border-radius:50%;background:#d9a441;color:#1a100a;font-size:22px;line-height:1;font-family:inherit}
+.chips{display:flex;gap:8px;margin-bottom:14px;font-size:12.5px;overflow-x:auto;scrollbar-width:none}
+.chip{flex:none;padding:8px 14px;border-radius:99px;border:1px solid rgba(253,249,244,.28);background:rgba(253,249,244,.08);cursor:pointer}
+.chip.a{background:#d9a441;color:#1a100a;border-color:#d9a441}
+.row{position:relative;display:flex;gap:12px;align-items:center;background:rgba(24,15,9,.6);border:1px solid rgba(253,249,244,.16);border-radius:14px;padding:8px;margin-bottom:10px;cursor:pointer}
+.row img{width:78px;height:78px;border-radius:10px;object-fit:cover}
+.rt b{display:block;font-size:14px;font-weight:600;margin-bottom:6px}.rt .pr{padding:0}
+.row .add{bottom:auto;top:50%;margin-top:-16px}
+.back{position:fixed;top:calc(env(safe-area-inset-top) + 12px);right:calc(50% - min(50vw,215px) + 14px);width:38px;height:38px;border-radius:50%;border:0;background:rgba(14,8,4,.7);color:#fdf9f4;font-size:20px;z-index:5}
+.hero{display:block;width:calc(100% + 36px);margin:calc(-16px - env(safe-area-inset-top)) -18px 0;height:300px;object-fit:cover}
+.sheet{margin:-26px -18px 0;position:relative;background:#1a100a;border-radius:24px 24px 0 0;padding:20px 20px 10px;border-top:1px solid rgba(253,249,244,.2);min-height:60vh}
+.dt{font-family:Aime,"Noto Sans Arabic";font-size:24px;margin-bottom:6px}
+.sheet .pr{padding:0}
+.in{background:rgba(253,249,244,.08);border:1px dashed rgba(253,249,244,.3);border-radius:12px;padding:12px;font-size:13px;color:rgba(253,249,244,.55);margin-top:14px}
+.qty{display:flex;align-items:center;gap:16px;margin:18px 0;font-size:20px}
+.qty button,.q button{width:36px;height:36px;border-radius:50%;border:1px solid #d9a441;background:none;color:#f5b72e;font-size:20px;font-family:inherit}
+.cta{position:fixed;bottom:calc(92px + env(safe-area-inset-bottom));width:calc(min(100vw,430px) - 36px);height:52px;border-radius:14px;border:0;background:#d9a441;color:#1a100a;font-weight:700;font-size:15px;font-family:inherit;display:flex;justify-content:space-between;align-items:center;padding:0 18px;z-index:4}
+.cta.wa{background:#25a244;color:#fff}
+.card{background:rgba(24,15,9,.6);border:1px solid rgba(253,249,244,.2);border-radius:16px;padding:4px 14px}
+.ci{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(253,249,244,.14)}
+.ci:last-child{border:0}.ci img{width:54px;height:54px;border-radius:10px;object-fit:cover}.ci div.n{flex:1;font-size:13.5px}.ci .pr{padding:0}
+.q{display:flex;align-items:center;gap:10px}.q button{width:30px;height:30px;font-size:17px}
+.tot{display:flex;justify-content:space-between;padding:10px 0;font-size:14px}.tot.b{font-size:16px;font-weight:700;color:#f5b72e}
+.note2{font-size:11.5px;color:rgba(253,249,244,.6);margin:12px 0;text-align:center}
+.br{background:rgba(24,15,9,.6);border:1.5px solid rgba(253,249,244,.2);border-radius:16px;padding:16px;margin-bottom:12px;cursor:pointer}
+.br.on{border-color:#d9a441}
+.br h4{font-size:16px;margin-bottom:6px;display:flex;justify-content:space-between}.br p{font-size:13px;color:rgba(253,249,244,.75);margin:3px 0}
+.radio{width:20px;height:20px;border-radius:50%;border:2px solid #d9a441;display:inline-block}
+.br.on .radio{background:radial-gradient(#d9a441 45%,transparent 50%)}
+.empty{text-align:center;color:rgba(253,249,244,.6);padding:50px 0;font-size:14px}
+.tabs{position:absolute;bottom:0;left:0;right:0;height:calc(84px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:rgba(14,8,4,.97);border-top:1px solid rgba(253,249,244,.16);display:flex;justify-content:space-around;padding-top:10px;font-size:11px;color:rgba(253,249,244,.6);z-index:6}
+.tabs div{text-align:center;cursor:pointer;position:relative}.tabs u{display:block;text-decoration:none;font-size:20px;margin-bottom:3px}
+.tabs .a{color:#f5b72e}
+.cnt{position:absolute;top:-4px;right:-8px;min-width:18px;height:18px;border-radius:9px;background:#d9a441;color:#1a100a;font-size:11px;line-height:18px;font-weight:700}
+</style>
+</head>
+<body>
+<div id="app"><div id="view"></div><div class="tabs" id="tabs"></div></div>
+<script>
+var DISHES=[
+{id:1,n:"صحن منتو حجازي باللحم",c:"h",i:"YA4VFQRS.jpg"},
+{id:2,n:"فرموزة حجازية بالسمسم",c:"h",i:"ZY5ZJ7I5.jpg"},
+{id:3,n:"يغمش حجازي",c:"h",i:"YGHM2K9X.jpg"},
+{id:4,n:"طبق حجازي مشكل",c:"h",i:"N7EF4DTY.jpg"},
+{id:5,n:"بف محشو باللحم",c:"b",i:"GPVB3CTI.jpg"},
+{id:6,n:"بف محشو بالجبن السائل",c:"b",i:"FSI6KMZP.jpg"},
+{id:7,n:"بف محشو بجبنة الشيدر",c:"b",i:"F76TRPYM.jpg"},
+{id:8,n:"بف محشو بالدجاج",c:"b",i:"CIAUZIVI.jpg"},
+{id:9,n:"بف محشو بالخضار",c:"b",i:"HHIND7T3.jpg"},
+{id:10,n:"ملفوف حجازي محشو",c:"m",i:"GXRCRYFC.jpg"},
+{id:11,n:"ورق عنب محشو",c:"m",i:"NWILFSJT.jpg"}];
+var CATS=[{k:"h",t:"الحجازيات",d:1},{k:"b",t:"البف المحشو",d:8},{k:"m",t:"ملفوف وورق عنب",d:11}];
+var BR={y:{n:"فرع حي اليرموك",a:"الرياض، حي اليرموك، شارع النجاح",p:"0551296445",w:"966551296445"},
+a:{n:"فرع حي العقيق",a:"الرياض، حي العقيق، شارع السليمانية",p:"0509404366",w:"966509404366"}};
+var HOURS="يومياً من ١ ظهراً حتى ١ صباحاً";
+var S=JSON.parse(localStorage.getItem("mentu_app")||'{"cart":{},"br":null}');
+function save(){localStorage.setItem("mentu_app",JSON.stringify(S))}
+var D=function(id){return DISHES.filter(function(x){return x.id==id})[0]};
+var PR='<span class="pr">— ر.س <em>سعر لاحقاً</em></span>';
+var AR=function(n){return String(n).replace(/\d/g,function(d){return "٠١٢٣٤٥٦٧٨٩"[d]})};
+function count(){var t=0;for(var k in S.cart)t+=S.cart[k];return t}
+function addCart(id,q){S.cart[id]=(S.cart[id]||0)+(q||1);save();render()}
+function route(){return (location.hash||"#home").slice(1).split("/")}
+function go(h){location.hash=h}
+function tabs(a){var t=[["home","⌂","الرئيسية"],["menu/b","▦","المنيو"],["cart","▤","السلة"],["branch","◎","الفروع"]];
+return t.map(function(x){var on=a==x[0].split("/")[0];return '<div class="'+(on?"a":"")+'" onclick="go(\''+x[0]+'\')"><u>'+x[1]+'</u>'+x[2]+(x[0]=="cart"&&count()?'<span class="cnt">'+AR(count())+'</span>':'')+'</div>'}).join("")}
+function hd(t){return '<div class="top"><div class="title">'+t+'</div><div class="badge">مسودة</div></div><div class="uline"></div>'}
+function sel(){var b=S.br?BR[S.br].n:"اختر الفرع";return '<div class="sel" onclick="go(\'branch\')"><div><small>الطلب من</small>'+b+'</div><span class="gold">'+(S.br?"تغيير":"اختيار")+' ▾</span></div>'}
+function card(d){return '<div class="dish" onclick="go(\'dish/'+d.id+'\')"><img src="/'+d.i+'"><b>'+d.n+'</b>'+PR+'<button class="add" onclick="event.stopPropagation();addCart('+d.id+')">+</button></div>'}
+function rowh(d){return '<div class="row" onclick="go(\'dish/'+d.id+'\')"><img src="/'+d.i+'"><div class="rt"><b>'+d.n+'</b>'+PR+'</div><button class="add" onclick="event.stopPropagation();addCart('+d.id+')">+</button></div>'}
+var dq=1;
+function render(){var r=route(),v=document.getElementById("view"),h="",a=r[0];
+if(a=="home"||a==""){
+h=hd("منتو اكسبرس")+sel()+'<div class="sec"><b>الأقسام</b></div><div class="cats">'+CATS.map(function(c){return '<div class="cat" onclick="go(\'menu/'+c.k+'\')"><img src="/'+D(c.d).i+'">'+c.t+'</div>'}).join("")+'</div><div class="sec"><b>أطباقنا</b><span class="gold" style="font-size:12.5px" onclick="go(\'menu/h\')">عرض الكل</span></div><div class="grid">'+[2,3].map(function(i){return card(D(i))}).join("")+'</div>';a="home"}
+else if(a=="menu"){var k=r[1]||"h",ct=CATS.filter(function(c){return c.k==k})[0];
+h=hd(ct.t)+'<div class="chips">'+CATS.map(function(c){return '<div class="chip '+(c.k==k?"a":"")+'" onclick="go(\'menu/'+c.k+'\')">'+c.t+'</div>'}).join("")+'</div>'+DISHES.filter(function(d){return d.c==k}).map(rowh).join("");a="menu"}
+else if(a=="dish"){var d=D(r[1]);if(!window.__dq||window.__dqid!=d.id){dq=1;window.__dq=1;window.__dqid=d.id}
+h='<button class="back" onclick="history.back()">›</button><img class="hero" src="/'+d.i+'"><div class="sheet"><div class="dt">'+d.n+'</div>'+PR+'<div class="in">وصف الطبق: يضاف لاحقاً</div><div class="qty"><button onclick="qd(-1)">−</button><b id="qn">'+AR(dq)+'</b><button onclick="qd(1)">+</button></div></div><button class="cta" onclick="addCart('+d.id+',dq);dq=1;go(\'cart\')"><span>أضف إلى السلة</span><span>— ر.س</span></button>';a="menu"}
+else if(a=="cart"){var ids=Object.keys(S.cart).filter(function(k){return S.cart[k]>0});
+if(!ids.length){h=hd("السلة")+'<div class="empty">السلة فارغة<br><br><span class="gold" onclick="go(\'menu/h\')">تصفح المنيو</span></div>'}
+else{h=hd("السلة")+sel()+'<div class="card">'+ids.map(function(k){var d=D(k);return '<div class="ci"><img src="/'+d.i+'"><div class="n">'+d.n+'<br>'+PR+'</div><div class="q"><button onclick="cq('+k+',1)">+</button><b>'+AR(S.cart[k])+'</b><button onclick="cq('+k+',-1)">−</button></div></div>'}).join("")+'</div><div class="card" style="margin-top:12px"><div class="tot"><span>المجموع</span><span>— ر.س</span></div><div class="tot b"><span>الإجمالي</span><span>— ر.س</span></div></div><div class="note2">الأسعار تضاف لاحقاً · الطلب يصل إلى واتساب الفرع</div><button class="cta wa" onclick="send()"><span>إرسال الطلب عبر واتساب</span><span>✆</span></button>'}
+a="cart"}
+else if(a=="branch"){h=hd("اختر الفرع")+Object.keys(BR).map(function(k){var b=BR[k];return '<div class="br '+(S.br==k?"on":"")+'" onclick="pick(\''+k+'\')"><h4>'+b.n+' <span class="radio"></span></h4><p>'+b.a+'</p><p>'+b.p+'</p><p class="gold">'+HOURS+'</p></div>'}).join("");a="branch"}
+v.innerHTML=h;document.getElementById("tabs").innerHTML=tabs(a);v.scrollTop=0}
+function qd(x){dq=Math.max(1,dq+x);document.getElementById("qn").textContent=AR(dq)}
+function cq(k,x){S.cart[k]=Math.max(0,(S.cart[k]||0)+x);if(!S.cart[k])delete S.cart[k];save();var y=document.getElementById("view").scrollTop;render();document.getElementById("view").scrollTop=y}
+function pick(k){S.br=k;save();go(count()?'cart':'home')}
+function send(){if(!S.br){go("branch");return}
+var l=["السلام عليكم، أرغب بطلب من "+BR[S.br].n+":",""];
+Object.keys(S.cart).forEach(function(k){l.push("- "+D(k).n+" × "+AR(S.cart[k]))});
+l.push("","(طلب تجريبي من تطبيق منتو اكسبرس)");
+window.location.href="https://wa.me/"+BR[S.br].w+"?text="+encodeURIComponent(l.join("\n"))}
+window.addEventListener("hashchange",render);render();
+</script>
+</body>
+</html>
