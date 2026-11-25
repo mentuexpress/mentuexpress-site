@@ -12512,6 +12512,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     { label: "\u062C\u0648\u0627\u0644 \u0641\u0631\u0639 \u062D\u064A \u0627\u0644\u064A\u0631\u0645\u0648\u0643", value: "0551296445" },
     { label: "\u0641\u0631\u0639 \u062D\u064A \u0627\u0644\u0639\u0642\u064A\u0642", value: "\u0627\u0644\u0631\u064A\u0627\u0636\u060C \u062D\u064A \u0627\u0644\u0639\u0642\u064A\u0642\u060C \u0634\u0627\u0631\u0639 \u0627\u0644\u0633\u0644\u064A\u0645\u0627\u0646\u064A\u0629" },
     { label: "\u062C\u0648\u0627\u0644 \u0641\u0631\u0639 \u062D\u064A \u0627\u0644\u0639\u0642\u064A\u0642", value: "0509404366" },
+    { label: "\u0644\u0644\u0634\u0643\u0627\u0648\u0649 \u0648\u0627\u0644\u0627\u0642\u062A\u0631\u0627\u062D\u0627\u062A", value: /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("a", { href: "tel:+966550064004", style: { color: "inherit", textDecoration: "none" }, children: "0550064004" }) },
     { label: "\u0627\u0644\u062F\u0648\u0627\u0645", value: "\u064A\u0648\u0645\u064A\u0627\u064B \u0645\u0646 \u0661 \u0638\u0647\u0631\u0627\u064B \u062D\u062A\u0649 \u0661 \u0635\u0628\u0627\u062D\u0627\u064B" },
     { label: "\u0627\u0644\u062A\u0642\u064A\u064A\u0645", value: "\u0664\u066B\u0664 \u0645\u0646 \u0665 \u0639\u0644\u0649 \u0642\u0648\u0642\u0644\u060C \u0645\u0646 \u0668\u0667\u0665 \u062A\u0642\u064A\u064A\u0645\u0627\u064B" }
   ];
@@ -12558,6 +12559,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
           /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { className: "mentu-actions", children: [
             /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(Eo, { href: "https://wa.me/966551296445", children: "\u0648\u0627\u062A\u0633\u0627\u0628 \u0641\u0631\u0639 \u062D\u064A \u0627\u0644\u064A\u0631\u0645\u0648\u0643" }),
             /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(Eo, { href: "https://wa.me/966509404366", children: "\u0648\u0627\u062A\u0633\u0627\u0628 \u0641\u0631\u0639 \u062D\u064A \u0627\u0644\u0639\u0642\u064A\u0642" }),
+            /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(Eo, { href: "https://wa.me/966550064004", children: "\u0648\u0627\u062A\u0633\u0627\u0628 \u0644\u0644\u0634\u0643\u0627\u0648\u0649 \u0648\u0627\u0644\u0627\u0642\u062A\u0631\u0627\u062D\u0627\u062A" }),
             /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(Eo, { href: "https://maps.app.goo.gl/kBdYWUP784rzq7R8A", variant: "secondary", children: "\u0641\u0631\u0639 \u062D\u064A \u0627\u0644\u064A\u0631\u0645\u0648\u0643 \u0639\u0644\u0649 \u0642\u0648\u0642\u0644 \u0645\u0627\u0628" }),
             /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(Eo, { href: "https://maps.app.goo.gl/zzJZf2BnYFHCJRVx5", variant: "secondary", children: "\u0641\u0631\u0639 \u062D\u064A \u0627\u0644\u0639\u0642\u064A\u0642 \u0639\u0644\u0649 \u0642\u0648\u0642\u0644 \u0645\u0627\u0628" })
           ] }),
