@@ -48,6 +48,7 @@ body{font-family:KMR,"Noto Sans Arabic","Geeza Pro",sans-serif;color:#fdf9f4;dis
 .row .add{bottom:auto;top:50%;margin-top:-16px}
 .back{position:fixed;top:calc(env(safe-area-inset-top) + 12px);right:calc(50% - min(50vw,215px) + 14px);width:38px;height:38px;border-radius:50%;border:0;background:rgba(14,8,4,.7);color:#fdf9f4;font-size:20px;z-index:5}
 .hero{display:block;width:calc(100% + 36px);margin:calc(-16px - env(safe-area-inset-top)) -18px 0;height:300px;object-fit:cover}
+.hero.full{object-fit:contain;background:#fff;height:auto;aspect-ratio:1}
 .sheet{margin:-26px -18px 0;position:relative;background:#1a100a;border-radius:24px 24px 0 0;padding:20px 20px 10px;border-top:1px solid rgba(253,249,244,.2);min-height:60vh}
 .dt{font-family:Aime,"Noto Sans Arabic";font-size:24px;margin-bottom:6px}
 .sheet .pr{padding:0}
@@ -109,7 +110,7 @@ body{font-family:KMR,"Noto Sans Arabic","Geeza Pro",sans-serif;color:#fdf9f4;dis
 <body>
 <div id="app"><div id="view"></div><div class="tabs" id="tabs"></div></div>
 <script>
-var BUILD="20261126-5";
+var BUILD="20261126-6";
 (function(){try{if(sessionStorage.getItem("bchk"))return;sessionStorage.setItem("bchk","1");fetch(location.pathname,{cache:"reload"}).then(function(r){return r.text()}).then(function(t){if(t.indexOf('var BUILD="'+BUILD+'"')<0)location.reload()}).catch(function(){})}catch(e){}})();
 </script>
 <script>
@@ -173,7 +174,7 @@ h=hd("منتو اكسبرس")+sel()+loyCard()+'<div class="sec"><b>الأقسا�
 else if(a=="menu"){var k=r[1]||"h",ct=CATS.filter(function(c){return c.k==k})[0];
 h=hd(ct.t)+'<div class="chips">'+CATS.map(function(c){return '<div class="chip '+(c.k==k?"a":"")+'" onclick="go(\'menu/'+c.k+'\')">'+c.t+'</div>'}).join("")+'</div>'+DISHES.filter(function(d){return d.c==k}).map(rowh).join("");a="menu"}
 else if(a=="dish"){var d=D(r[1]);if(!window.__dq||window.__dqid!=d.id){dq=1;window.__dq=1;window.__dqid=d.id}
-h='<button class="back" onclick="history.back()">›</button><img class="hero" src="/'+d.i+'"><div class="sheet"><div class="dt">'+d.n+'</div>'+PR+'<div class="in">وصف الطبق: يضاف لاحقاً</div><div class="qty"><button onclick="qd(-1)">−</button><b id="qn">'+AR(dq)+'</b><button onclick="qd(1)">+</button></div></div><button class="cta" onclick="addCart('+d.id+',dq);dq=1;go(\'cart\')"><span>أضف إلى السلة</span><span>— ر.س</span></button>';a="menu"}
+h='<button class="back" onclick="history.back()">›</button><img class="hero'+(d.id==1?" full":"")+'" src="/'+d.i+'"><div class="sheet"><div class="dt">'+d.n+'</div>'+PR+'<div class="in">وصف الطبق: يضاف لاحقاً</div><div class="qty"><button onclick="qd(-1)">−</button><b id="qn">'+AR(dq)+'</b><button onclick="qd(1)">+</button></div></div><button class="cta" onclick="addCart('+d.id+',dq);dq=1;go(\'cart\')"><span>أضف إلى السلة</span><span>— ر.س</span></button>';a="menu"}
 else if(a=="cart"){var ids=Object.keys(S.cart).filter(function(k){return S.cart[k]>0});
 if(!ids.length){h=hd("السلة")+'<div class="empty">السلة فارغة<br><br><span class="gold" onclick="go(\'menu/h\')">تصفح المنيو</span></div>'}
 else{h=hd("السلة")+sel()+'<div class="sel" onclick="go(\'map\')"><div><small>موقع التوصيل</small>'+(S.loc?"تم تحديد الموقع على الخريطة":"اختر الموقع على الخريطة")+'</div><span class="gold">'+(S.loc?"تغيير":"اختيار")+'</span></div>'+'<div class="card">'+ids.map(function(k){var d=D(k);return '<div class="ci"><img src="/'+d.i+'"><div class="n">'+d.n+'<br>'+PR+'</div><div class="q"><button onclick="cq('+k+',1)">+</button><b>'+AR(S.cart[k])+'</b><button onclick="cq('+k+',-1)">−</button></div></div>'}).join("")+'</div><div class="card" style="margin-top:12px"><div class="tot"><span>المجموع</span><span>— ر.س</span></div><div class="tot b"><span>الإجمالي</span><span>— ر.س</span></div></div>'+freeNote()+'<div class="note2">الأسعار تضاف لاحقاً · الطلب يصل إلى واتساب الفرع</div><button class="cta wa" onclick="send()"><span>إرسال الطلب عبر واتساب</span><span>✆</span></button>'}
