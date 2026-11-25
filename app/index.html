@@ -102,12 +102,14 @@ body{font-family:KMR,"Noto Sans Arabic","Geeza Pro",sans-serif;color:#fdf9f4;dis
 .btn.d{border-color:#ff8a7a;color:#ff8a7a;margin-top:10px}
 .x{color:#ff8a7a;font-size:20px;padding:0 6px;cursor:pointer}
 .fld input.sm{height:44px}
+.mapbox{height:380px;border-radius:14px;overflow:hidden;border:1px solid rgba(253,249,244,.2);background:#222}
+.leaflet-container{font-family:inherit}
 </style>
 </head>
 <body>
 <div id="app"><div id="view"></div><div class="tabs" id="tabs"></div></div>
 <script>
-var BUILD="20261126-2";
+var BUILD="20261126-3";
 (function(){try{if(sessionStorage.getItem("bchk"))return;sessionStorage.setItem("bchk","1");fetch(location.pathname,{cache:"reload"}).then(function(r){return r.text()}).then(function(t){if(t.indexOf('var BUILD="'+BUILD+'"')<0)location.reload()}).catch(function(){})}catch(e){}})();
 </script>
 <script>
@@ -160,7 +162,7 @@ function doEdit(){var n=document.getElementById("un").value.trim(),p=document.ge
 if(!n){e.textContent="الرجاء إدخال الاسم";return}
 if(!/^05\d{8}$/.test(p)){e.textContent="الرجاء إدخال رقم جوال صحيح من ١٠ أرقام يبدأ بـ 05";return}
 S.u={n:n,p:p};save();go("account")}
-function delAcc(){localStorage.removeItem("mentu_app");S={"cart":{},"br":null,"u":null};go("home");render()}
+function delAcc(){localStorage.removeItem("mentu_app");S={"cart":{},"br":null,"u":null,"loc":null};go("home");render()}
 function fsend(){document.getElementById("fm").innerHTML='<div class="mockn" style="font-size:13px;text-align:center">نموذج تجريبي: لم يتم إرسال أي شيء.</div>'}
 function tgl(){S.nt=!S.nt;save();render()}
 function signOut(){S.u=null;save();go("home");render()}
@@ -174,7 +176,7 @@ else if(a=="dish"){var d=D(r[1]);if(!window.__dq||window.__dqid!=d.id){dq=1;wind
 h='<button class="back" onclick="history.back()">›</button><img class="hero" src="/'+d.i+'"><div class="sheet"><div class="dt">'+d.n+'</div>'+PR+'<div class="in">وصف الطبق: يضاف لاحقاً</div><div class="qty"><button onclick="qd(-1)">−</button><b id="qn">'+AR(dq)+'</b><button onclick="qd(1)">+</button></div></div><button class="cta" onclick="addCart('+d.id+',dq);dq=1;go(\'cart\')"><span>أضف إلى السلة</span><span>— ر.س</span></button>';a="menu"}
 else if(a=="cart"){var ids=Object.keys(S.cart).filter(function(k){return S.cart[k]>0});
 if(!ids.length){h=hd("السلة")+'<div class="empty">السلة فارغة<br><br><span class="gold" onclick="go(\'menu/h\')">تصفح المنيو</span></div>'}
-else{h=hd("السلة")+sel()+'<div class="card">'+ids.map(function(k){var d=D(k);return '<div class="ci"><img src="/'+d.i+'"><div class="n">'+d.n+'<br>'+PR+'</div><div class="q"><button onclick="cq('+k+',1)">+</button><b>'+AR(S.cart[k])+'</b><button onclick="cq('+k+',-1)">−</button></div></div>'}).join("")+'</div><div class="card" style="margin-top:12px"><div class="tot"><span>المجموع</span><span>— ر.س</span></div><div class="tot b"><span>الإجمالي</span><span>— ر.س</span></div></div>'+freeNote()+'<div class="note2">الأسعار تضاف لاحقاً · الطلب يصل إلى واتساب الفرع</div><button class="cta wa" onclick="send()"><span>إرسال الطلب عبر واتساب</span><span>✆</span></button>'}
+else{h=hd("السلة")+sel()+'<div class="sel" onclick="go(\'map\')"><div><small>موقع التوصيل</small>'+(S.loc?"تم تحديد الموقع على الخريطة":"اختر الموقع على الخريطة")+'</div><span class="gold">'+(S.loc?"تغيير":"اختيار")+'</span></div>'+'<div class="card">'+ids.map(function(k){var d=D(k);return '<div class="ci"><img src="/'+d.i+'"><div class="n">'+d.n+'<br>'+PR+'</div><div class="q"><button onclick="cq('+k+',1)">+</button><b>'+AR(S.cart[k])+'</b><button onclick="cq('+k+',-1)">−</button></div></div>'}).join("")+'</div><div class="card" style="margin-top:12px"><div class="tot"><span>المجموع</span><span>— ر.س</span></div><div class="tot b"><span>الإجمالي</span><span>— ر.س</span></div></div>'+freeNote()+'<div class="note2">الأسعار تضاف لاحقاً · الطلب يصل إلى واتساب الفرع</div><button class="cta wa" onclick="send()"><span>إرسال الطلب عبر واتساب</span><span>✆</span></button>'}
 a="cart"}
 else if(a=="account"){
 if(!S.u){h=hd("تسجيل الدخول")+'<label class="fld">الاسم<input id="un" type="text" autocomplete="off"></label><label class="fld">رقم الجوال<input id="up" type="tel" inputmode="numeric" placeholder="05XXXXXXXX" autocomplete="off"></label><div class="err" id="ue"></div><button class="btn" onclick="doSignIn()">تسجيل الدخول</button><div class="mockn">نموذج تجريبي: لا يوجد حساب حقيقي ولا رمز تحقق. الاسم والرقم يُحفظان على هذا الجهاز فقط.</div>'}
@@ -194,14 +196,24 @@ else if(a=="privacy")h=hd("سياسة الخصوصية")+B+'<div class="card" st
 else if(a=="contact")h=hd("تواصل معنا")+B+Object.keys(BR).map(function(k){var b=BR[k];return '<div class="br" style="cursor:default"><h4>'+b.n+'</h4><p>'+b.a+'</p><p dir="ltr" style="text-align:right">'+b.p+'</p><div class="cl"><a href="tel:'+b.p+'">اتصال</a><a href="https://wa.me/'+b.w+'">واتساب</a></div></div>'}).join("")+'<div class="gold" style="font-size:12.5px;text-align:center">'+HOURS+'</div>';
 else h=hd("عن التطبيق")+B+'<div class="card" style="padding:14px;font-size:13.5px;line-height:1.9">تطبيق منتو اكسبرس، الرياض.<br>'+HOURS+'</div><div class="mockn">نموذج تجريبي (مسودة) لعرض الفكرة فقط وليس النسخة النهائية.</div>';
 a="account"}
+else if(a=="map"){h=hd("موقع التوصيل")+'<div class="bk" onclick="go(\'cart\')">› رجوع</div><div class="mapbox" id="mp"></div><div class="mockn" id="lc" style="margin:10px 0">'+(S.loc?"الموقع المحدد: "+S.loc.lat.toFixed(5)+" ، "+S.loc.lng.toFixed(5):"اضغط على الخريطة لتحديد موقع التوصيل في الرياض")+'</div><button class="btn" onclick="locOk()">تأكيد الموقع</button><div class="mockn">نموذج تجريبي: لا توجد مناطق أو رسوم توصيل بعد، والموقع يُحفظ على هذا الجهاز ويُضاف لرسالة الطلب فقط.</div>';a="cart"}
 else if(a=="branch"){h=hd("اختر الفرع")+Object.keys(BR).map(function(k){var b=BR[k];return '<div class="br '+(S.br==k?"on":"")+'" onclick="pick(\''+k+'\')"><h4>'+b.n+' <span class="radio"></span></h4><p>'+b.a+'</p><p>'+b.p+'</p><p class="gold">'+HOURS+'</p></div>'}).join("");a="branch"}
-v.innerHTML=h;document.getElementById("tabs").innerHTML=a=="gate"?"":tabs(a);v.scrollTop=0}
+v.innerHTML=h;if(r[0]=="map")initMap();document.getElementById("tabs").innerHTML=a=="gate"?"":tabs(a);v.scrollTop=0}
 function qd(x){dq=Math.max(1,dq+x);document.getElementById("qn").textContent=AR(dq)}
 function cq(k,x){S.cart[k]=Math.max(0,(S.cart[k]||0)+x);if(!S.cart[k])delete S.cart[k];save();var y=document.getElementById("view").scrollTop;render();document.getElementById("view").scrollTop=y}
 function pick(k){S.br=k;save();go(count()?'cart':'home')}
+var TMP=null;
+function locOk(){if(!TMP&&!S.loc){document.getElementById("lc").textContent="الرجاء تحديد الموقع على الخريطة أولاً";return}if(TMP)S.loc=TMP;save();go("cart")}
+function initMap(){function run(){var c=S.loc?[S.loc.lat,S.loc.lng]:[24.7136,46.6753];var m=L.map("mp").setView(c,S.loc?15:11);
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap"}).addTo(m);TMP=null;var mk=S.loc?L.marker(c).addTo(m):null;
+m.on("click",function(e){TMP={lat:e.latlng.lat,lng:e.latlng.lng};if(mk)mk.setLatLng(e.latlng);else mk=L.marker(e.latlng).addTo(m);document.getElementById("lc").textContent="الموقع المحدد: "+TMP.lat.toFixed(5)+" ، "+TMP.lng.toFixed(5)})}
+if(window.L){run();return}
+var l=document.createElement("link");l.rel="stylesheet";l.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(l);
+var j=document.createElement("script");j.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";j.onload=run;document.head.appendChild(j)}
 function send(){if(!S.br){go("branch");return}
 var l=["السلام عليكم، أرغب بطلب من "+BR[S.br].n+":",""];
 Object.keys(S.cart).forEach(function(k){l.push("- "+D(k).n+" × "+AR(S.cart[k]))});
+if(S.loc)l.push("","موقع التوصيل: https://maps.google.com/?q="+S.loc.lat.toFixed(6)+","+S.loc.lng.toFixed(6));
 l.push("","(طلب تجريبي من تطبيق منتو اكسبرس)");
 window.location.href="https://wa.me/"+BR[S.br].w+"?text="+encodeURIComponent(l.join("\n"))}
 window.addEventListener("hashchange",render);render();
