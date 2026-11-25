@@ -12504,7 +12504,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     { photo: malfouf_scene_default, w: 1e3, h: 1e3, alt: "\u0645\u0644\u0641\u0648\u0641 \u062D\u062C\u0627\u0632\u064A \u0645\u062D\u0634\u0648" },
     { photo: waraq_default, w: 1e3, h: 1e3, alt: "\u0648\u0631\u0642 \u0639\u0646\u0628 \u0645\u062D\u0634\u0648" }
   ];
-  var reviews = ["./RV01.jpg", "./RV02.jpg", "./RV03.jpg", "./RV04.jpg", "./RV05.jpg", "./RV06.jpg", "./RV07.jpg", "./RV08.jpg", "./RV09.jpg", "./RV10.jpg", "./RV11.jpg", "./RV12.jpg", "./RV13.jpg", "./RV14.jpg", "./RV15.jpg", "./RV16.jpg"];
+  var reviews = ["./RV01.jpg", "./RV02.jpg", "./RV03.jpg", "./RV04.jpg", "./RV05.jpg", "./RV06.jpg", "./RV07.jpg", "./RV09.jpg", "./RV10.jpg", "./RV11.jpg", "./RV12.jpg", "./RV14.jpg", "./RV16.jpg", "./RV17.jpg", "./RV18.jpg", "./RV19.jpg", "./RV20.jpg", "./RV21.jpg", "./RV22.jpg", "./RV23.jpg"];
   var chips = ["\u0645\u0641\u062A\u0648\u062D \u064A\u0648\u0645\u064A\u0627\u064B \u0645\u0646 \u0661 \u0638\u0647\u0631\u0627\u064B \u062D\u062A\u0649 \u0661 \u0635\u0628\u0627\u062D\u0627\u064B", "\u0664\u066B\u0664 \u0645\u0646 \u0665 \u0639\u0644\u0649 \u0642\u0648\u0642\u0644"];
   var hungerstationUrl = "https://hungerstation.go.link/?c=SA&s=c&v=16393&so=mls&adj_t=1sdhhuza_1spi9ypp&adj_og_title=%D9%85%D9%86%D8%AA%D9%88+%D8%A7%D9%83%D8%B3%D8%A8%D8%B1%D8%B3&adj_og_image=https://images.deliveryhero.io/image/hungerstation/restaurant/logo_ar/f2327a711ea7932e002c712dd23932f6.jpeg";
   var facts = [
