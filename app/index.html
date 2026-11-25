@@ -72,6 +72,16 @@ body{font-family:KMR,"Noto Sans Arabic","Geeza Pro",sans-serif;color:#fdf9f4;dis
 .tabs div{text-align:center;cursor:pointer;position:relative}.tabs u{display:block;text-decoration:none;font-size:20px;margin-bottom:3px}
 .tabs .a{color:#f5b72e}
 .cnt{position:absolute;top:-4px;right:-8px;min-width:18px;height:18px;border-radius:9px;background:#d9a441;color:#1a100a;font-size:11px;line-height:18px;font-weight:700}
+.loy{background:rgba(24,15,9,.6);border:1px solid #d9a441;border-radius:16px;padding:14px;margin-bottom:16px}
+.loy .lh{display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:700;margin-bottom:12px}
+.loy .lh em{font-style:normal;font-weight:400;font-size:10px;color:rgba(253,249,244,.6);border:1px dashed rgba(253,249,244,.35);border-radius:6px;padding:1px 6px}
+.steps{display:flex;gap:8px;margin-bottom:10px}
+.steps i{flex:1;height:34px;border-radius:10px;border:1.5px solid rgba(217,164,65,.6);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:14px;color:rgba(253,249,244,.6)}
+.steps i.f{background:#d9a441;color:#1a100a;font-weight:700;border-color:#d9a441}
+.loy .lc{font-size:13px;color:#f5b72e;margin-bottom:6px}
+.loy .lr{font-size:12px;line-height:1.7;color:rgba(253,249,244,.78)}
+.freen{background:rgba(217,164,65,.14);border:1px solid #d9a441;border-radius:14px;padding:12px 14px;margin-bottom:12px;font-size:13px;line-height:1.7}
+.freen b{color:#f5b72e}
 </style>
 </head>
 <body>
@@ -109,16 +119,20 @@ function sel(){var b=S.br?BR[S.br].n:"اختر الفرع";return '<div class="s
 function card(d){return '<div class="dish" onclick="go(\'dish/'+d.id+'\')"><img src="/'+d.i+'"><b>'+d.n+'</b>'+PR+'<button class="add" onclick="event.stopPropagation();addCart('+d.id+')">+</button></div>'}
 function rowh(d){return '<div class="row" onclick="go(\'dish/'+d.id+'\')"><img src="/'+d.i+'"><div class="rt"><b>'+d.n+'</b>'+PR+'</div><button class="add" onclick="event.stopPropagation();addCart('+d.id+')">+</button></div>'}
 var dq=1;
+var LOY=(location.search.match(/loy=(\d)/)||[0,3])[1]*1;
+function loyCard(){var st="";for(var i=1;i<=5;i++)st+='<i class="'+(i<=LOY?"f":"")+'">'+AR(i)+'</i>';
+return '<div class="loy"><div class="lh"><span>بطاقة الولاء</span><em>تجريبي</em></div><div class="steps">'+st+'</div><div class="lc">'+(LOY>=5?'طلبك القادم مجاني':AR(LOY)+' من ٥ طلبات')+'</div><div class="lr">كل طلب عبر التطبيق بقيمة أكثر من ٥٠ ريال يُحتسب في البطاقة. بعد ٥ طلبات يكون الطلب السادس مجانياً بقيمة حتى ٥٠ ريال، وما زاد على ذلك يدفعه العميل.</div></div>'}
+function freeNote(){return LOY>=5?'<div class="freen"><b>هذا الطلب هو الطلب المجاني</b><br>القيمة المجانية حتى ٥٠ ريال، وما زاد على ذلك يدفعه العميل.</div>':''}
 function render(){var r=route(),v=document.getElementById("view"),h="",a=r[0];
 if(a=="home"||a==""){
-h=hd("منتو اكسبرس")+sel()+'<div class="sec"><b>الأقسام</b></div><div class="cats">'+CATS.map(function(c){return '<div class="cat" onclick="go(\'menu/'+c.k+'\')"><img src="/'+D(c.d).i+'">'+c.t+'</div>'}).join("")+'</div><div class="sec"><b>أطباقنا</b><span class="gold" style="font-size:12.5px" onclick="go(\'menu/h\')">عرض الكل</span></div><div class="grid">'+[2,3].map(function(i){return card(D(i))}).join("")+'</div>';a="home"}
+h=hd("منتو اكسبرس")+sel()+loyCard()+'<div class="sec"><b>الأقسام</b></div><div class="cats">'+CATS.map(function(c){return '<div class="cat" onclick="go(\'menu/'+c.k+'\')"><img src="/'+D(c.d).i+'">'+c.t+'</div>'}).join("")+'</div><div class="sec"><b>أطباقنا</b><span class="gold" style="font-size:12.5px" onclick="go(\'menu/h\')">عرض الكل</span></div><div class="grid">'+[2,3].map(function(i){return card(D(i))}).join("")+'</div>';a="home"}
 else if(a=="menu"){var k=r[1]||"h",ct=CATS.filter(function(c){return c.k==k})[0];
 h=hd(ct.t)+'<div class="chips">'+CATS.map(function(c){return '<div class="chip '+(c.k==k?"a":"")+'" onclick="go(\'menu/'+c.k+'\')">'+c.t+'</div>'}).join("")+'</div>'+DISHES.filter(function(d){return d.c==k}).map(rowh).join("");a="menu"}
 else if(a=="dish"){var d=D(r[1]);if(!window.__dq||window.__dqid!=d.id){dq=1;window.__dq=1;window.__dqid=d.id}
 h='<button class="back" onclick="history.back()">›</button><img class="hero" src="/'+d.i+'"><div class="sheet"><div class="dt">'+d.n+'</div>'+PR+'<div class="in">وصف الطبق: يضاف لاحقاً</div><div class="qty"><button onclick="qd(-1)">−</button><b id="qn">'+AR(dq)+'</b><button onclick="qd(1)">+</button></div></div><button class="cta" onclick="addCart('+d.id+',dq);dq=1;go(\'cart\')"><span>أضف إلى السلة</span><span>— ر.س</span></button>';a="menu"}
 else if(a=="cart"){var ids=Object.keys(S.cart).filter(function(k){return S.cart[k]>0});
 if(!ids.length){h=hd("السلة")+'<div class="empty">السلة فارغة<br><br><span class="gold" onclick="go(\'menu/h\')">تصفح المنيو</span></div>'}
-else{h=hd("السلة")+sel()+'<div class="card">'+ids.map(function(k){var d=D(k);return '<div class="ci"><img src="/'+d.i+'"><div class="n">'+d.n+'<br>'+PR+'</div><div class="q"><button onclick="cq('+k+',1)">+</button><b>'+AR(S.cart[k])+'</b><button onclick="cq('+k+',-1)">−</button></div></div>'}).join("")+'</div><div class="card" style="margin-top:12px"><div class="tot"><span>المجموع</span><span>— ر.س</span></div><div class="tot b"><span>الإجمالي</span><span>— ر.س</span></div></div><div class="note2">الأسعار تضاف لاحقاً · الطلب يصل إلى واتساب الفرع</div><button class="cta wa" onclick="send()"><span>إرسال الطلب عبر واتساب</span><span>✆</span></button>'}
+else{h=hd("السلة")+sel()+'<div class="card">'+ids.map(function(k){var d=D(k);return '<div class="ci"><img src="/'+d.i+'"><div class="n">'+d.n+'<br>'+PR+'</div><div class="q"><button onclick="cq('+k+',1)">+</button><b>'+AR(S.cart[k])+'</b><button onclick="cq('+k+',-1)">−</button></div></div>'}).join("")+'</div><div class="card" style="margin-top:12px"><div class="tot"><span>المجموع</span><span>— ر.س</span></div><div class="tot b"><span>الإجمالي</span><span>— ر.س</span></div></div>'+freeNote()+'<div class="note2">الأسعار تضاف لاحقاً · الطلب يصل إلى واتساب الفرع</div><button class="cta wa" onclick="send()"><span>إرسال الطلب عبر واتساب</span><span>✆</span></button>'}
 a="cart"}
 else if(a=="branch"){h=hd("اختر الفرع")+Object.keys(BR).map(function(k){var b=BR[k];return '<div class="br '+(S.br==k?"on":"")+'" onclick="pick(\''+k+'\')"><h4>'+b.n+' <span class="radio"></span></h4><p>'+b.a+'</p><p>'+b.p+'</p><p class="gold">'+HOURS+'</p></div>'}).join("");a="branch"}
 v.innerHTML=h;document.getElementById("tabs").innerHTML=tabs(a);v.scrollTop=0}
