@@ -109,7 +109,7 @@ body{font-family:KMR,"Noto Sans Arabic","Geeza Pro",sans-serif;color:#fdf9f4;dis
 <body>
 <div id="app"><div id="view"></div><div class="tabs" id="tabs"></div></div>
 <script>
-var BUILD="20261126-3";
+var BUILD="20261126-4";
 (function(){try{if(sessionStorage.getItem("bchk"))return;sessionStorage.setItem("bchk","1");fetch(location.pathname,{cache:"reload"}).then(function(r){return r.text()}).then(function(t){if(t.indexOf('var BUILD="'+BUILD+'"')<0)location.reload()}).catch(function(){})}catch(e){}})();
 </script>
 <script>
@@ -206,7 +206,9 @@ var TMP=null;
 function locOk(){if(!TMP&&!S.loc){document.getElementById("lc").textContent="الرجاء تحديد الموقع على الخريطة أولاً";return}if(TMP)S.loc=TMP;save();go("cart")}
 function initMap(){function run(){var c=S.loc?[S.loc.lat,S.loc.lng]:[24.7136,46.6753];var m=L.map("mp").setView(c,S.loc?15:11);
 L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap"}).addTo(m);TMP=null;var mk=S.loc?L.marker(c).addTo(m):null;
-m.on("click",function(e){TMP={lat:e.latlng.lat,lng:e.latlng.lng};if(mk)mk.setLatLng(e.latlng);else mk=L.marker(e.latlng).addTo(m);document.getElementById("lc").textContent="الموقع المحدد: "+TMP.lat.toFixed(5)+" ، "+TMP.lng.toFixed(5)})}
+var cl=0;m.on("click",function(e){cl=1;TMP={lat:e.latlng.lat,lng:e.latlng.lng};if(mk)mk.setLatLng(e.latlng);else mk=L.marker(e.latlng).addTo(m);document.getElementById("lc").textContent="الموقع المحدد: "+TMP.lat.toFixed(5)+" ، "+TMP.lng.toFixed(5)});
+var lc=function(t){var e=document.getElementById("lc");if(e)e.textContent=t};
+if(!S.loc&&navigator.geolocation){lc("جاري تحديد موقعك الحالي...");navigator.geolocation.getCurrentPosition(function(p){if(cl)return;var ll=L.latLng(p.coords.latitude,p.coords.longitude);TMP={lat:ll.lat,lng:ll.lng};m.setView(ll,16);if(mk)mk.setLatLng(ll);else mk=L.marker(ll).addTo(m);lc("موقعك الحالي: "+ll.lat.toFixed(5)+" ، "+ll.lng.toFixed(5)+" (اضغط على الخريطة لتعديل الدبوس)")},function(){if(!cl)lc("تعذر تحديد موقعك. اختر موقع التوصيل على الخريطة")},{enableHighAccuracy:true,timeout:10000})}}
 if(window.L){run();return}
 var l=document.createElement("link");l.rel="stylesheet";l.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(l);
 var j=document.createElement("script");j.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";j.onload=run;document.head.appendChild(j)}
