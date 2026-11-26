@@ -61,7 +61,7 @@ function drawPick(){var d=PK,sh=document.getElementById("mo-sh");
  sh.innerHTML=h;document.getElementById("mo-c").onclick=closeCart;
  sh.querySelectorAll("[data-o]").forEach(function(e){e.onclick=function(){pso=+e.getAttribute("data-o");drawPick()}});
  sh.querySelectorAll("[data-q]").forEach(function(e){e.onclick=function(){pq=Math.max(0,pq+(+e.getAttribute("data-q")));drawPick()}});
- document.getElementById("mo-tr").onclick=function(){var k=d.id+"_"+pso;if(S.cart[k]){delete S.cart[k];save();paint()}pq=0;pso=0;closeCart()};
+ document.getElementById("mo-tr").onclick=function(){var k=d.id+"_"+pso;if(S.cart[k]>0){S.cart[k]--;if(S.cart[k]<=0)delete S.cart[k];save();paint()}pq=Math.max(0,pq-1);drawPick()};
  document.getElementById("mo-ad").onclick=function(){if(!pq)return;addC(d.id,pq,pso);closeCart()}}
 function paint(){
  document.querySelectorAll(".mo-add").forEach(function(b){var q=0;for(var k in S.cart)if(k.split("_")[0]==b.getAttribute("data-id"))q+=S.cart[k];var cn="mo-add"+(q?" on":""),tx=q?AR(q):"+";if(b.className!=cn)b.className=cn;if(b.textContent!=tx)b.textContent=tx});
