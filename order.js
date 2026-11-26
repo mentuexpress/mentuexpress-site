@@ -46,11 +46,11 @@ function scan(){
   if(getComputedStyle(card).position=="static")card.style.position="relative";
   var b=document.createElement("button");b.type="button";b.className="mo-add";b.setAttribute("data-id",d.id);b.setAttribute("aria-label","أضف "+d.n);b.textContent="+";
   b.onclick=function(e){e.preventDefault();e.stopPropagation();if(d.single){addC(d.id,1,0)}else{PK=d;pso=0;pq=1;drawPick();ov.classList.add("open")}};
-  var pl=document.createElement("div");pl.className="mo-pr";pl.innerHTML=(d.single?"":"من ")+AR(d.o[0][1])+" ر.س<small>"+AR(d.k)+" سعرة "+(d.kn||"للحبة")+"</small>";card.appendChild(pl);
+  var pl=document.createElement("div");pl.className="mo-pr";pl.innerHTML=(d.single?"":"من ")+AR(d.o[0][1])+" ر.س";card.appendChild(pl);
   card.appendChild(b)});
  paint()}
 function drawPick(){var d=PK,sh=document.getElementById("mo-sh");
- var h='<div class="mo-h"><b>'+d.n+'</b><button class="mo-x" id="mo-c">×</button></div><div style="font-size:13px;color:rgba(253,249,244,.7)">'+AR(d.k)+' سعرة '+(d.kn||"للحبة")+'</div><div class="mo-br" style="flex-wrap:wrap;margin-top:14px">';
+ var h='<div class="mo-h"><b>'+d.n+'</b><button class="mo-x" id="mo-c">×</button></div><div class="mo-br" style="flex-wrap:wrap;margin-top:14px">';
  d.o.forEach(function(x,i){h+='<div data-o="'+i+'" class="'+(i==pso?"on":"")+'" style="flex:1 1 30%">'+AR(x[0])+' حبة<br><b>'+AR(x[1])+' ر.س</b></div>'});
  h+='</div><div class="mo-q" style="justify-content:center;margin:18px 0;font-size:20px"><button data-q="1">+</button><b>'+AR(pq)+'</b><button data-q="-1">−</button></div><button class="mo-go" id="mo-ad">أضف إلى السلة · '+AR(d.o[pso][1]*pq)+' ر.س</button>';
  sh.innerHTML=h;document.getElementById("mo-c").onclick=closeCart;
