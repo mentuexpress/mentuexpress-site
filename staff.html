@@ -25,6 +25,11 @@ button.g{background:#2b2218;color:#f4ead6;border:1px solid #4a3a24}button.r{back
 .items{margin:8px 0;padding:8px 0;border-top:1px dashed #4a3a24;border-bottom:1px dashed #4a3a24}
 a{color:#d4a24c}.muted{color:#a8977a;font-size:14px}
 #rc{display:none}
+.tabs{display:flex;gap:8px;max-width:720px;margin:12px auto 0;padding:0 12px}.tabs button{flex:1;background:#2b2218;color:#f4ead6;border:1px solid #4a3a24}.tabs button.on{background:#d4a24c;color:#1a1208}
+.rf{display:grid;grid-template-columns:1fr 1fr;gap:8px}.rf input{font-size:16px;padding:10px}.rq{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}
+.card h3{margin:0 0 8px;font-size:17px;color:#d4a24c}.big{font-size:26px;font-weight:700;color:#e6f5b8}
+.card.att{border-color:#5a4a2a;background:#17120d}
+.rg td,.rg th{padding:4px 6px;text-align:right;border-bottom:1px solid #2b2218;font-weight:400}.rg{width:100%;border-collapse:collapse}.rg th{color:#a8977a;font-size:14px}
 @media print{html,body{background:#fff!important;color:#000!important;margin:0!important;padding:0!important;height:auto!important}
 body>*:not(#rc){display:none!important}
 #rc{display:block!important;position:static!important;color:#000!important;background:#fff!important;width:100%!important;max-width:72mm;margin:0;font-size:14px;line-height:1.5;direction:rtl;text-align:right;padding:0}
@@ -35,7 +40,12 @@ body>*:not(#rc){display:none!important}
 <label for="br">الفرع</label><select id="br"><option value="yarmouk">فرع حي اليرموك</option><option value="aqiq">فرع حي العقيق</option></select>
 <label for="pin">الرقم السري (٦ أرقام)</label><input id="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="off">
 <button id="go">دخول</button><div class="err" id="er"></div></div>
-<div id="ap" style="display:none"><div class="top"><h1 id="bn"></h1><div><span class="muted" id="st"></span> <button class="g" id="out">خروج</button></div></div><div class="wrap" id="ls"></div></div>
+<div id="ap" style="display:none"><div class="top"><h1 id="bn"></h1><div><span class="muted" id="st"></span> <button class="g" id="out">خروج</button></div></div><div class="tabs"><button id="t1" class="on">الطلبات</button><button id="t2" class="g">التقارير</button></div>
+<div class="wrap" id="ls"></div>
+<div class="wrap" id="rp" style="display:none"><div class="card"><div class="rf"><div><label for="rfrom" style="margin-top:0">من تاريخ</label><input type="date" id="rfrom"></div><div><label for="rto" style="margin-top:0">إلى تاريخ</label><input type="date" id="rto"></div></div>
+<div class="rq"><button class="g" id="rtd">اليوم</button><button class="g" id="ryd">أمس</button><button class="g" id="r7">آخر ٧ أيام</button><button id="rgo">عرض التقرير</button></div>
+<div class="muted">يوم العمل يبدأ ٦ صباحاً وينتهي ٦ صباحاً اليوم التالي، فطلبات ما بعد منتصف الليل تُحسب على اليوم السابق.</div></div>
+<div id="rr"></div></div></div>
 <div id="rc"></div>
 <script>
 (function(){
@@ -93,6 +103,53 @@ function pr(x){var R=$("rc");R.textContent="";R.appendChild(bc(String(x.id)));t(
  t(R,"div",x.name);t(R,"div",x.phone);t(R,"hr");(x.items||[]).forEach(function(i){t(R,"div",i.n+(i.o?" ("+ol(i.o)+")":"")+" × "+AR(i.q)+" = "+AR(i.s))});
  var f=Number(x.delivery_fee)||0,tt=Number(x.total)||0;t(R,"hr");t(R,"div","المجموع: "+AR(tt)+" ر.س");if(f)t(R,"div","التوصيل: "+AR(f)+" ر.س");t(R,"b","الإجمالي: "+AR(tt+f)+" ر.س");
  setTimeout(function(){window.print()},100)}
+
+var rd=null,rm=null;
+function bday(off){var d=new Date(Date.now()+3*36e5-6*36e5-(off||0)*864e5);return d.toISOString().slice(0,10)}
+function showTab(k){$("ls").style.display=k==="o"?"":"none";$("rp").style.display=k==="r"?"":"none";$("t1").className=k==="o"?"on":"g";$("t2").className=k==="r"?"on":"g";if(k==="r"&&!$("rfrom").value){$("rfrom").value=$("rto").value=bday(0);loadRep()}}
+function money(x){return AR((Math.round(x*100)/100).toString().replace(".","٫"))+" ر.س"}
+function loadRep(){var a=$("rfrom").value,b=$("rto").value;if(!a||!b){$("rr").textContent="";t($("rr"),"p","اختر التاريخ","muted");return}
+ if(b<a){$("rr").textContent="";t($("rr"),"p","تاريخ النهاية قبل البداية","err");return}
+ $("rr").textContent="";t($("rr"),"p","...","muted");
+ rpc("staff_report",{p_branch:br,p_pin:pin,p_from:a,p_to:b}).then(function(r){
+  if(r.error){$("rr").textContent="";t($("rr"),"p",r.error==="bad range"?"الفترة طويلة (أقصاها ٦٢ يوماً)":msg(r.error),"err");if(r.error==="bad")logout();return}
+  rd=r.orders;buildRep(a,b);drawRep()},function(){$("rr").textContent="";t($("rr"),"p","لا يوجد اتصال","err")})}
+function buildRep(a,b){var o=rd,cf=o.filter(function(x){return x.status==="confirmed"}),at=o.filter(function(x){return x.status!=="confirmed"});
+ var F=function(x){return Number(x.delivery_fee)||0},T=function(x){return Number(x.total)||0};
+ var sales=0,fees=0,fr=0,im={},dm={};
+ cf.forEach(function(x){sales+=T(x);fees+=F(x);if(x.free_reward)fr++;
+  var d=new Date(new Date(x.created_at).getTime()+3*36e5-6*36e5).toISOString().slice(0,10);dm[d]=dm[d]||{n:0,s:0,f:0};dm[d].n++;dm[d].s+=T(x);dm[d].f+=F(x);
+  (x.items||[]).forEach(function(i){var k=i.n+(i.o?" ("+ol(i.o)+")":"");im[k]=im[k]||{q:0,s:0};im[k].q+=Number(i.q)||0;im[k].s+=Number(i.s)||0})});
+ var pend=at.filter(function(x){return x.status==="pending"}),canc=at.filter(function(x){return x.status==="cancelled"});
+ var sum=function(l){return l.reduce(function(a,x){return a+T(x)+F(x)},0)};
+ var m=[];m.push({h:NM[br]+" - "+(a===b?"\u2066"+a+"\u2069":"من \u2066"+a+"\u2069 إلى \u2066"+b+"\u2069")});
+ m.push({k:"عدد الطلبات المؤكدة",v:AR(cf.length),big:1});m.push({k:"المبيعات (بدون التوصيل)",v:money(sales)});m.push({k:"رسوم التوصيل",v:money(fees)});m.push({k:"الإجمالي المحصّل",v:money(sales+fees),big:1});
+ if(cf.length)m.push({k:"متوسط الطلب",v:money((sales+fees)/cf.length)});
+ if(fr)m.push({k:"مشكل حجازي مجاني (ولاء)",v:AR(fr)});
+ if(a!==b){m.push({h:"حسب اليوم"});m.push({tb:["اليوم","طلبات","المبيعات","التوصيل"]});Object.keys(dm).sort().forEach(function(d){m.push({tb:[d,AR(dm[d].n),money(dm[d].s),money(dm[d].f)]})})}
+ m.push({h:"الأصناف المباعة"});var ks=Object.keys(im).sort(function(x,y){return im[y].q-im[x].q});
+ if(!ks.length)m.push({x:"لا توجد مبيعات"});else{m.push({tb:["الصنف","الكمية","القيمة"]});ks.forEach(function(k){m.push({tb:[k,AR(im[k].q),money(im[k].s)]})})}
+ m.push({h:"محاولات غير مؤكدة (لا تُحسب مبيعات)",att:1});m.push({k:"جديد/لم يُؤكد",v:AR(pend.length)+" ("+money(sum(pend))+")",att:1});m.push({k:"ملغي",v:AR(canc.length)+" ("+money(sum(canc))+")",att:1});
+ rm=m;rm.conf=cf}
+function drawRep(){var R=$("rr");R.textContent="";var c=null,tb=null;
+ var a=t(R,"div",null,"rq");t(a,"button","🖨 طباعة").onclick=prRep;t(a,"button","⬇ تصدير CSV","g").onclick=csvRep;
+ rm.forEach(function(e){if(e.h){c=t(R,"div",null,"card"+(e.att?" att":""));t(c,"h3",e.h);tb=null;return}
+  if(!c)c=t(R,"div",null,"card");
+  if(e.k){tb=null;var r=t(c,"div",null,"row");t(r,"span",e.k);t(r,"b",e.v,e.big?"big":"");return}
+  if(e.x){t(c,"div",e.x,"muted");return}
+  if(e.tb){if(!tb)tb=t(c,"table",null,"rg");var tr=t(tb,"tr");e.tb.forEach(function(v){t(tr,tb.rows.length===1?"th":"td",v)})}})}
+function prRep(){var Rc=$("rc");Rc.textContent="";t(Rc,"h2","منتو اكسبرس");t(Rc,"div","تقرير المبيعات","num");
+ rm.forEach(function(e){if(e.h){t(Rc,"hr");t(Rc,"b",e.h);return}if(e.k){t(Rc,"div",e.k+": "+e.v);return}if(e.x){t(Rc,"div",e.x);return}if(e.tb)t(Rc,"div",e.tb.join(" | "))});
+ t(Rc,"hr");t(Rc,"div","طُبع: "+AR(new Date().toLocaleString("en-GB",{timeZone:"Asia/Riyadh"})));setTimeout(function(){window.print()},100)}
+function csvRep(){var q=function(v){return '"'+String(v==null?"":v).replace(/"/g,'""')+'"'};
+ var rows=[["رقم الطلب","التاريخ","الوقت","الاسم","الجوال","الحالة","المجموع","التوصيل","الإجمالي","المسافة كم","الأصناف"]];
+ var sl={pending:"جديد",confirmed:"مؤكد",cancelled:"ملغي"};
+ rd.forEach(function(x){var d=new Date(x.created_at),f=Number(x.delivery_fee)||0,tt=Number(x.total)||0;
+  rows.push([x.id,d.toLocaleDateString("en-CA",{timeZone:"Asia/Riyadh"}),d.toLocaleTimeString("en-GB",{timeZone:"Asia/Riyadh",hour:"2-digit",minute:"2-digit"}),x.name,x.phone,sl[x.status]||x.status,tt,f,tt+f,x.distance_km==null?"":x.distance_km,(x.items||[]).map(function(i){return i.n+(i.o?" ("+i.o+")":"")+" x"+i.q}).join(" + ")])});
+ var blob=new Blob(["\ufeff"+rows.map(function(r){return r.map(q).join(",")}).join("\r\n")],{type:"text/csv;charset=utf-8"});
+ var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="mentu-"+br+"-"+$("rfrom").value+"_"+$("rto").value+".csv";document.body.appendChild(a);a.click();setTimeout(function(){a.remove()},500)}
+$("t1").onclick=function(){showTab("o")};$("t2").onclick=function(){showTab("r")};$("rgo").onclick=loadRep;
+$("rtd").onclick=function(){$("rfrom").value=$("rto").value=bday(0);loadRep()};$("ryd").onclick=function(){$("rfrom").value=$("rto").value=bday(1);loadRep()};$("r7").onclick=function(){$("rfrom").value=bday(6);$("rto").value=bday(0);loadRep()};
 $("go").onclick=login;$("pin").onkeydown=function(e){if(e.key==="Enter")login()};$("out").onclick=logout;
 var sb=sessionStorage.getItem("sb"),sp=sessionStorage.getItem("sp");if(sb&&sp){$("br").value=sb;$("pin").value=sp;login()}
 })();
