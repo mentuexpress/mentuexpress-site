@@ -89,7 +89,6 @@ function bc(txt){var P="212222,222122,222221,121223,121322,131222,122213,122312,
 function pr(x){var R=$("rc");R.textContent="";R.appendChild(bc(String(x.id)));t(R,"div","#"+x.id,"num");t(R,"h2","منتو اكسبرس");t(R,"div",NM[br]);t(R,"div","طلب #"+AR(x.id)+" - "+tm(x.created_at));t(R,"hr");
  t(R,"div",x.name);t(R,"div",x.phone);t(R,"hr");(x.items||[]).forEach(function(i){t(R,"div",i.n+(i.o?" ("+i.o+")":"")+" × "+AR(i.q)+" = "+AR(i.s))});
  var f=Number(x.delivery_fee)||0,tt=Number(x.total)||0;t(R,"hr");t(R,"div","المجموع: "+AR(tt)+" ر.س");t(R,"div","التوصيل: "+(f?AR(f)+" ر.س":"مجاني"));t(R,"b","الإجمالي: "+AR(tt+f)+" ر.س");
- if(x.free_reward||(x.status==="pending"&&x.reward_eligible)){t(R,"hr");t(R,"b","+ مشكل حجازي ٤٠ حبة مجاناً")}
  setTimeout(function(){window.print()},100)}
 $("go").onclick=login;$("pin").onkeydown=function(e){if(e.key==="Enter")login()};$("out").onclick=logout;
 var sb=sessionStorage.getItem("sb"),sp=sessionStorage.getItem("sp");if(sb&&sp){$("br").value=sb;$("pin").value=sp;login()}
