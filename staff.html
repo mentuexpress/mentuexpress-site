@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>طلبات الفرع | منتو اكسبرس</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#14100c;color:#f4ead6;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;font-size:16px}
+h1{font-size:20px;margin:0;color:#d4a24c}
+.top{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:#1d1711;border-bottom:1px solid #3a2d1c;position:sticky;top:0}
+.wrap{max-width:720px;margin:0 auto;padding:12px}
+.login{max-width:360px;margin:60px auto;padding:20px;background:#1d1711;border:1px solid #3a2d1c;border-radius:14px}
+label{display:block;margin:12px 0 6px;color:#cdbb97}
+select,input{width:100%;padding:12px;border-radius:10px;border:1px solid #4a3a24;background:#0f0c09;color:#fff;font-size:18px}
+button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:12px 16px;background:#d4a24c;color:#1a1208;font-weight:700}
+button.g{background:#2b2218;color:#f4ead6;border:1px solid #4a3a24}button.r{background:#5a1f1a;color:#fff}
+.login button{width:100%;margin-top:16px}
+.err{color:#ff8a7a;margin-top:10px;min-height:20px}
+.card{background:#1d1711;border:1px solid #3a2d1c;border-radius:14px;padding:14px;margin:12px 0}
+.card.pending{border-color:#d4a24c;box-shadow:0 0 0 1px #d4a24c}
+.row{display:flex;justify-content:space-between;gap:8px;margin:4px 0}
+.badge{display:inline-block;padding:2px 10px;border-radius:99px;font-size:13px;background:#3a2d1c}
+.badge.pending{background:#d4a24c;color:#1a1208}.badge.confirmed{background:#2d5a2d}.badge.cancelled,.badge.expired{background:#5a1f1a}
+.gift{margin:8px 0;padding:8px;border-radius:8px;background:#2d3a1a;color:#e6f5b8}
+.acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.items{margin:8px 0;padding:8px 0;border-top:1px dashed #4a3a24;border-bottom:1px dashed #4a3a24}
+a{color:#d4a24c}.muted{color:#a8977a;font-size:14px}
+#rc{display:none}
+@media print{body>*:not(#rc){display:none!important}#rc{display:block;color:#000;background:#fff;width:72mm;font-size:14px;line-height:1.5;direction:rtl;padding:2mm}
+#rc h2{text-align:center;margin:0 0 4px}#rc hr{border:0;border-top:1px dashed #000}@page{size:80mm auto;margin:3mm}}
+</style></head><body>
+<div id="lg" class="login"><h1>طلبات الفرع</h1>
+<label for="br">الفرع</label><select id="br"><option value="yarmouk">فرع حي اليرموك</option><option value="aqiq">فرع حي العقيق</option></select>
+<label for="pin">الرقم السري (٦ أرقام)</label><input id="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="off">
+<button id="go">دخول</button><div class="err" id="er"></div></div>
+<div id="ap" style="display:none"><div class="top"><h1 id="bn"></h1><div><span class="muted" id="st"></span> <button class="g" id="out">خروج</button></div></div><div class="wrap" id="ls"></div></div>
+<div id="rc"></div>
+<script>
+(function(){
+var U="https://cdqqxjbadgivujibehzt.supabase.co",K="sb_publishable_dpe06zJ0jZ68-ZEVonhqAQ_7DkEXOjS";
+var NM={yarmouk:"فرع حي اليرموك",aqiq:"فرع حي العقيق"};
+var $=function(i){return document.getElementById(i)};
+var br,pin,seen=null,ac=null,timer=null,data=[];
+function rpc(f,b){return fetch(U+"/rest/v1/rpc/"+f,{method:"POST",headers:{apikey:K,"Content-Type":"application/json"},body:JSON.stringify(b)}).then(function(r){return r.json()})}
+function AR(x){return String(x).replace(/\d/g,function(d){return "٠١٢٣٤٥٦٧٨٩"[d]})}
+function beep(){try{if(!ac)return;[0,.25,.5].forEach(function(t){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=880;o.connect(g);g.connect(ac.destination);g.gain.setValueAtTime(.3,ac.currentTime+t);g.gain.setValueAtTime(0,ac.currentTime+t+.15);o.start(ac.currentTime+t);o.stop(ac.currentTime+t+.2)})}catch(e){}}
+function msg(e){return e==="bad"?"الرقم السري غير صحيح":e==="locked"?"الفرع مقفل مؤقتاً بسبب محاولات خاطئة، حاول بعد ١٥ دقيقة":"تعذر الاتصال، حاول مرة ثانية"}
+function login(){var b=$("br").value,p=$("pin").value.trim();
+ if(!/^\d{6}$/.test(p)){$("er").textContent="أدخل ٦ أرقام";return}
+ try{ac=ac||new (window.AudioContext||window.webkitAudioContext)()}catch(e){}
+ $("er").textContent="...";
+ rpc("staff_orders",{p_branch:b,p_pin:p}).then(function(r){
+  if(r.error){$("er").textContent=msg(r.error);return}
+  br=b;pin=p;sessionStorage.setItem("sb",b);sessionStorage.setItem("sp",p);start(r)
+ },function(){$("er").textContent=msg()})}
+function start(r){$("lg").style.display="none";$("ap").style.display="";$("bn").textContent=NM[br];render(r.orders,true);timer=setInterval(poll,10000)}
+function poll(){rpc("staff_orders",{p_branch:br,p_pin:pin}).then(function(r){if(r.error){$("st").textContent=msg(r.error);if(r.error==="bad")logout();return}$("st").textContent="";render(r.orders,false)},function(){$("st").textContent="لا يوجد اتصال"})}
+function logout(){clearInterval(timer);sessionStorage.clear();location.reload()}
+function t(el,tag,txt,cls){var e=document.createElement(tag);if(txt!=null)e.textContent=txt;if(cls)e.className=cls;el.appendChild(e);return e}
+function tm(s){var d=new Date(s);return AR(d.toLocaleTimeString("ar-SA",{hour:"2-digit",minute:"2-digit",timeZone:"Asia/Riyadh"}))}
+function render(o,first){data=o;var ids=o.filter(function(x){return x.status==="pending"}).map(function(x){return x.id});
+ if(seen&&ids.some(function(i){return seen.indexOf(i)<0}))beep();
+ seen=ids;var L=$("ls");L.textContent="";
+ if(!o.length)t(L,"p","لا توجد طلبات في آخر ٢٤ ساعة","muted");
+ o.forEach(function(x){var c=t(L,"div",null,"card "+x.status);
+  var h=t(c,"div",null,"row");t(h,"b","طلب #"+AR(x.id));var sl={pending:"جديد",confirmed:"مؤكد",cancelled:"ملغي",expired:"منتهي"};t(h,"span",sl[x.status]||x.status,"badge "+x.status);
+  t(c,"div",tm(x.created_at),"muted");
+  t(c,"div",x.name);var p=t(c,"a",x.phone);p.href="tel:"+String(x.phone).replace(/[^\d+]/g,"");
+  var it=t(c,"div",null,"items");(x.items||[]).forEach(function(i){t(it,"div","• "+i.n+(i.o?" ("+i.o+")":"")+" × "+AR(i.q)+" = "+AR(i.s)+" ر.س")});
+  var f=Number(x.delivery_fee)||0,tt=Number(x.total)||0;
+  r2(c,"المجموع",AR(tt)+" ر.س");r2(c,"التوصيل ("+AR(Number(x.distance_km||0).toFixed(1))+" كم)",f?AR(f)+" ر.س":"مجاني");r2(c,"الإجمالي",AR(tt+f)+" ر.س");
+  if(x.lat&&x.lng){var m=t(c,"a","موقع التوصيل على الخريطة");m.href="https://maps.google.com/?q="+x.lat+","+x.lng;m.target="_blank";m.rel="noopener"}
+  if(x.status==="pending"&&x.reward_eligible)t(c,"div","العميل مؤهل: مشكل حجازي ٤٠ حبة مجاناً مع هذا الطلب","gift");
+  if(x.status==="confirmed"&&x.free_reward)t(c,"div","هذا الطلب فيه مشكل حجازي ٤٠ حبة مجاناً","gift");
+  var a=t(c,"div",null,"acts");
+  if(x.status==="pending"){t(a,"button","تأكيد وطباعة").onclick=function(){setS(x,"confirmed",true)};t(a,"button","إلغاء","r").onclick=function(){if(confirm("إلغاء الطلب؟"))setS(x,"cancelled",false)}}
+  if(x.status==="confirmed")t(a,"button","طباعة","g").onclick=function(){pr(x)}
+ })}
+function r2(c,a,b){var r=t(c,"div",null,"row");t(r,"span",a);t(r,"b",b)}
+function setS(x,s,print){rpc("staff_set_status",{p_branch:br,p_pin:pin,p_id:x.id,p_status:s}).then(function(r){
+ if(r.error){alert(r.error==="expired"?"الطلب منتهي (أكثر من ٢٤ ساعة)":"تعذر التنفيذ: "+r.error);poll();return}
+ if(print){x.status="confirmed";x.free_reward=r.reward;pr(x)}poll()},function(){alert("لا يوجد اتصال")})}
+function pr(x){var R=$("rc");R.textContent="";t(R,"h2","منتو اكسبرس");t(R,"div",NM[br]);t(R,"div","طلب #"+AR(x.id)+" - "+tm(x.created_at));t(R,"hr");
+ t(R,"div",x.name);t(R,"div",x.phone);t(R,"hr");(x.items||[]).forEach(function(i){t(R,"div",i.n+(i.o?" ("+i.o+")":"")+" × "+AR(i.q)+" = "+AR(i.s))});
+ var f=Number(x.delivery_fee)||0,tt=Number(x.total)||0;t(R,"hr");t(R,"div","المجموع: "+AR(tt)+" ر.س");t(R,"div","التوصيل: "+(f?AR(f)+" ر.س":"مجاني"));t(R,"b","الإجمالي: "+AR(tt+f)+" ر.س");
+ if(x.free_reward||(x.status==="pending"&&x.reward_eligible)){t(R,"hr");t(R,"b","+ مشكل حجازي ٤٠ حبة مجاناً")}
+ setTimeout(function(){window.print()},100)}
+$("go").onclick=login;$("pin").onkeydown=function(e){if(e.key==="Enter")login()};$("out").onclick=logout;
+var sb=sessionStorage.getItem("sb"),sp=sessionStorage.getItem("sp");if(sb&&sp){$("br").value=sb;$("pin").value=sp;login()}
+})();
+</script></body></html>
