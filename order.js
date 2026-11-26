@@ -26,6 +26,7 @@ css.textContent=".mo-add{position:absolute;left:12px;bottom:12px;width:44px;heig
 ".mo-h{display:flex;justify-content:space-between;align-items:center;font-size:20px;margin-bottom:12px}.mo-h b{color:#f5b72e}"+
 ".mo-x{background:none;border:0;color:#fdf9f4;font-size:26px;cursor:pointer}"+
 ".mo-it{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(253,249,244,.14)}.mo-it img{width:54px;height:54px;border-radius:10px;object-fit:cover}.mo-it span{flex:1;font-size:14px}"+
+".mo-del{width:34px;height:34px;border-radius:50%;border:1px solid #d9a441;background:none;color:#f5b72e;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none;margin-inline-start:8px;padding:0}.mo-del[disabled]{opacity:.3;cursor:default}"+
 ".mo-q{display:flex;align-items:center;gap:10px}.mo-q button{width:32px;height:32px;border-radius:50%;border:1px solid #d9a441;background:none;color:#f5b72e;font-size:18px;cursor:pointer;font-family:inherit}"+
 ".mo-lb{font-size:13px;color:rgba(253,249,244,.7);margin:16px 0 8px}"+
 ".mo-br{display:flex;gap:8px}.mo-br div{flex:1;text-align:center;padding:12px 6px;border-radius:12px;border:1.5px solid rgba(253,249,244,.25);font-size:14px;cursor:pointer}.mo-br div.on{border-color:#d9a441;background:rgba(217,164,65,.16);color:#f5b72e}"+
@@ -56,10 +57,11 @@ function scan(){
 function drawPick(){var d=PK,sh=document.getElementById("mo-sh");
  var h='<div class="mo-h"><b>'+d.n+'</b><button class="mo-x" id="mo-c">×</button></div><div class="mo-br" style="flex-wrap:wrap;margin-top:14px">';
  d.o.forEach(function(x,i){h+='<div data-o="'+i+'" class="'+(i==pso?"on":"")+'" style="flex:1 1 30%">'+AR(x[0])+' حبة<br><b>'+AR(x[1])+' ر.س</b></div>'});
- h+='</div><div class="mo-q" style="justify-content:center;margin:18px 0;font-size:20px"><button data-q="1">+</button><b>'+AR(pq)+'</b><button data-q="-1">−</button></div><button class="mo-go" id="mo-ad">أضف إلى السلة - '+AR(d.o[pso][1]*pq)+' ر.س</button>';
+ h+='</div><div class="mo-q" style="justify-content:center;margin:18px 0;font-size:20px;position:relative"><button data-q="1">+</button><b>'+AR(pq)+'</b><button data-q="-1">−</button><button class="mo-del" id="mo-tr" aria-label="حذف من السلة" style="position:absolute;left:18px"'+(S.cart[d.id+"_"+pso]?"":" disabled")+'><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 10v7M14 10v7"/></svg></button></div><button class="mo-go" id="mo-ad">أضف إلى السلة - '+AR(d.o[pso][1]*pq)+' ر.س</button>';
  sh.innerHTML=h;document.getElementById("mo-c").onclick=closeCart;
  sh.querySelectorAll("[data-o]").forEach(function(e){e.onclick=function(){pso=+e.getAttribute("data-o");drawPick()}});
  sh.querySelectorAll("[data-q]").forEach(function(e){e.onclick=function(){pq=Math.max(1,pq+(+e.getAttribute("data-q")));drawPick()}});
+ document.getElementById("mo-tr").onclick=function(){var k=d.id+"_"+pso;if(!S.cart[k])return;delete S.cart[k];save();paint();closeCart()};
  document.getElementById("mo-ad").onclick=function(){addC(d.id,pq,pso);closeCart()}}
 function paint(){
  document.querySelectorAll(".mo-add").forEach(function(b){var q=0;for(var k in S.cart)if(k.split("_")[0]==b.getAttribute("data-id"))q+=S.cart[k];var cn="mo-add"+(q?" on":""),tx=q?AR(q):"+";if(b.className!=cn)b.className=cn;if(b.textContent!=tx)b.textContent=tx});
@@ -72,13 +74,14 @@ function draw(){
  var sh=document.getElementById("mo-sh"),ks=Object.keys(S.cart).filter(function(k){return S.cart[k]>0});
  if(!ks.length){sh.innerHTML='<div class="mo-h"><b>طلبك</b><button class="mo-x" id="mo-c">×</button></div><p style="text-align:center;padding:30px 0;color:rgba(253,249,244,.6)">السلة فارغة<br>اضغط على + في أي طبق لإضافته</p>';document.getElementById("mo-c").onclick=closeCart;return}
  var h='<div class="mo-h"><b>طلبك</b><button class="mo-x" id="mo-c">×</button></div>';
- ks.forEach(function(k,i){var x=ck(k),d=x.d;h+='<div class="mo-it"><img src="'+d.s+'"><span>'+d.n+(d.single?"":" - "+olab(d,x.o))+'<br><b style="color:#f5b72e;font-size:12.5px">'+AR(d.o[x.o][1]*S.cart[k])+' ر.س</b></span><div class="mo-q"><button data-i="'+i+'" data-d="1">+</button><b>'+AR(S.cart[k])+'</b><button data-i="'+i+'" data-d="-1">−</button></div></div>'});
+ ks.forEach(function(k,i){var x=ck(k),d=x.d;h+='<div class="mo-it"><img src="'+d.s+'"><span>'+d.n+(d.single?"":" - "+olab(d,x.o))+'<br><b style="color:#f5b72e;font-size:12.5px">'+AR(d.o[x.o][1]*S.cart[k])+' ر.س</b></span><div class="mo-q"><button data-i="'+i+'" data-d="1">+</button><b>'+AR(S.cart[k])+'</b><button data-i="'+i+'" data-d="-1">−</button></div><button class="mo-del" data-del="'+i+'" aria-label="حذف"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 10v7M14 10v7"/></svg></button></div>'});
  h+='<div style="display:flex;justify-content:space-between;padding:12px 0;font-weight:700;color:#f5b72e"><span>مجموع الطلب</span><span>'+AR(ctot())+' ر.س</span></div><div id="mo-fee"></div><div class="mo-lb">الاسم</div><input class="mo-in" id="mo-n" type="text" autocomplete="name" value="'+esc(S.u.n)+'"><div class="mo-lb">رقم الجوال</div><input class="mo-in" id="mo-p" type="tel" inputmode="numeric" placeholder="05XXXXXXXX" autocomplete="tel" value="'+esc(S.u.p)+'"><div class="mo-lb">اختر الفرع</div><div class="mo-br"><div data-b="y" class="'+(S.br=="y"?"on":"")+'">'+BR.y.n+'</div><div data-b="a" class="'+(S.br=="a"?"on":"")+'">'+BR.a.n+'</div></div>';
  h+='<div class="mo-lb">موقع التوصيل (اضغط على الخريطة أو حرّك الدبوس)</div><button class="mo-loc" id="mo-loc" type="button">📍 تحديد موقعي الحالي</button><div class="mo-map" id="mo-map"></div><div class="mo-st" id="mo-st">'+(S.loc?"الموقع المحدد: "+S.loc.lat.toFixed(5)+" ، "+S.loc.lng.toFixed(5):"")+'</div>';
  h+='<div style="text-align:center;font-size:12.5px;color:#f5b72e;padding:6px 0">كل ٥ طلبات فوق ٦٠ ريال، السادس مشكل حجازي ٤٠ حبة مجاناً</div>';
  h+='<div class="mo-er" id="mo-er"></div><button class="mo-go" id="mo-go">إرسال الطلب عبر واتساب ✆</button><div style="text-align:center"><button class="mo-cl" id="mo-clr">تفريغ السلة</button></div>';
  sh.innerHTML=h;
  document.getElementById("mo-c").onclick=closeCart;
+ sh.querySelectorAll("[data-del]").forEach(function(b){b.onclick=function(){delete S.cart[ks[b.getAttribute("data-del")]];save();paint()}});
  sh.querySelectorAll(".mo-q button").forEach(function(b){b.onclick=function(){var k=ks[b.getAttribute("data-i")];S.cart[k]=Math.max(0,S.cart[k]+(+b.getAttribute("data-d")));if(!S.cart[k])delete S.cart[k];save();paint()}});
  sh.querySelectorAll("[data-b]").forEach(function(d){d.onclick=function(){S.br=d.getAttribute("data-b");save();draw()}});
  document.getElementById("mo-clr").onclick=function(){S.cart={};save();closeCart();paint()};
