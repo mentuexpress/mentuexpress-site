@@ -90,8 +90,10 @@ function draw(){
 var esc=function(x){return String(x).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
 var setPin=null;
 function locate(manual){var s=document.getElementById("mo-st");if(!navigator.geolocation){if(s)s.textContent="المتصفح لا يدعم تحديد الموقع، اضغط على الخريطة";return}
- if(s)s.textContent="جاري تحديد موقعك الحالي...";
- navigator.geolocation.getCurrentPosition(function(p){var ll={lat:p.coords.latitude,lng:p.coords.longitude};if(setPin)setPin(ll,"موقعك الحالي: ",1);else{S.loc=ll;save();var s2=document.getElementById("mo-st");if(s2)s2.textContent="موقعك الحالي: "+ll.lat.toFixed(5)+" ، "+ll.lng.toFixed(5)}},function(){var s2=document.getElementById("mo-st");if(s2&&!S.loc)s2.textContent="تعذر تحديد موقعك. فعّل الموقع في المتصفح أو اضغط على الخريطة"},{enableHighAccuracy:true,timeout:15000,maximumAge:0})}
+ if(manual)S.src="gps";if(s&&(manual||!S.loc))s.textContent="جاري تحديد موقعك الحالي...";
+ function ok(p){if(S.src==="manual"&&!manual)return;var ll={lat:p.coords.latitude,lng:p.coords.longitude};S.src="gps";if(setPin)setPin(ll,"موقعك الحالي: ",1);else{S.loc=ll;save();updFee();var s2=document.getElementById("mo-st");if(s2)s2.textContent="موقعك الحالي: "+ll.lat.toFixed(5)+" ، "+ll.lng.toFixed(5)}}
+ function bad(){var s2=document.getElementById("mo-st");if(s2&&!S.loc)s2.textContent="تعذر تحديد موقعك. فعّل الموقع في المتصفح أو اضغط على الخريطة"}
+ navigator.geolocation.getCurrentPosition(ok,function(e){if(e&&e.code===1){bad();return}navigator.geolocation.getCurrentPosition(ok,bad,{enableHighAccuracy:false,timeout:15000,maximumAge:600000})},{enableHighAccuracy:true,timeout:8000,maximumAge:0})}
 function send(){var er=document.getElementById("mo-er");
  var rh=(new Date().getUTCHours()+3)%24;if(rh>=1&&rh<13){er.textContent="المطعم مغلق حالياً، نفتح الساعة ١ ظهراً. لا يمكن إرسال الطلب الآن، تقدر تتصفح القائمة وتجهز السلة.";return}
  var nm=(S.u.n||"").trim(),ph=(S.u.p||"").replace(/[\s\-]/g,"").replace(/[٠-٩]/g,function(d){return "٠١٢٣٤٥٦٧٨٩".indexOf(d)});
@@ -114,18 +116,19 @@ var TMP=null;
 function initMap(){function run(){var el=document.getElementById("mo-map");if(!el)return;var c=S.loc?[S.loc.lat,S.loc.lng]:[24.7136,46.6753];var m=L.map(el).setView(c,S.loc?16:11);
  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap"}).addTo(m);
  var mk=null;
- function put(ll){if(mk)mk.setLatLng(ll);else{mk=L.marker(ll,{draggable:true}).addTo(m);mk.on("dragend",function(){var q=mk.getLatLng();setPin({lat:q.lat,lng:q.lng},"الموقع المحدد: ")})}}
+ function put(ll){if(mk)mk.setLatLng(ll);else{mk=L.marker(ll,{draggable:true}).addTo(m);mk.on("dragend",function(){var q=mk.getLatLng();S.src="manual";setPin({lat:q.lat,lng:q.lng},"الموقع المحدد: ")})}}
  setPin=function(ll,t,fly){S.loc={lat:ll.lat,lng:ll.lng};save();updFee();put(ll);if(fly)m.setView(ll,17);var s=document.getElementById("mo-st");if(s)s.textContent=t+S.loc.lat.toFixed(5)+" ، "+S.loc.lng.toFixed(5);var e=document.getElementById("mo-er");if(e)e.textContent=""};
  if(S.loc)put(S.loc);
- m.on("click",function(e){setPin(e.latlng,"الموقع المحدد: ")});
+ m.on("click",function(e){S.src="manual";setPin(e.latlng,"الموقع المحدد: ")});
  setTimeout(function(){m.invalidateSize()},200);
- if(!S.loc)locate()}
+ if(!S.loc||S.src!=="manual")locate()}
  if(window.L){run();return}
- var fail=function(){setPin=null;var el=document.getElementById("mo-map");if(el)el.innerHTML='<div style="padding:90px 14px;text-align:center;color:rgba(253,249,244,.7);font-size:13px">تعذر تحميل الخريطة. اضغط «تحديد موقعي الحالي» أعلاه.</div>'};
+ var fail=function(){setPin=null;if(!S.loc||S.src!=="manual")locate();var el=document.getElementById("mo-map");if(el)el.innerHTML='<div style="padding:90px 14px;text-align:center;color:rgba(253,249,244,.7);font-size:13px">تعذر تحميل الخريطة. اضغط «تحديد موقعي الحالي» أعلاه.</div>'};
  if(!document.getElementById("mo-lcss")){var l=document.createElement("link");l.id="mo-lcss";l.rel="stylesheet";l.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(l)}
  var j=document.createElement("script");j.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";j.onload=run;j.onerror=fail;document.head.appendChild(j)}
 new MutationObserver(function(ms){var go=0;ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType==1&&!(n.classList&&(n.classList.contains("mo-add")||n.classList.contains("mo-pr"))))go=1})});if(go)scan()}).observe(document.getElementById("root"),{childList:true,subtree:true});
 scan();
+try{if(!S.loc||S.src!=="manual")locate()}catch(e){}
 
 /* floating contact button */
 (function(){
