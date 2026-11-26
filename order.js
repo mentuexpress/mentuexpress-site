@@ -92,8 +92,8 @@ var setPin=null;
 function locate(manual){var s=document.getElementById("mo-st");if(!navigator.geolocation){if(s)s.textContent="المتصفح لا يدعم تحديد الموقع، اضغط على الخريطة";return}
  if(manual)S.src="gps";if(s&&(manual||!S.loc))s.textContent="جاري تحديد موقعك الحالي...";
  function ok(p){if(S.src==="manual"&&!manual)return;var ll={lat:p.coords.latitude,lng:p.coords.longitude};S.src="gps";if(setPin)setPin(ll,"موقعك الحالي: ",1);else{S.loc=ll;save();updFee();var s2=document.getElementById("mo-st");if(s2)s2.textContent="موقعك الحالي: "+ll.lat.toFixed(5)+" ، "+ll.lng.toFixed(5)}}
- function bad(){var s2=document.getElementById("mo-st");if(s2&&!S.loc)s2.textContent="تعذر تحديد موقعك. فعّل الموقع في المتصفح أو اضغط على الخريطة"}
- navigator.geolocation.getCurrentPosition(ok,function(e){if(e&&e.code===1){bad();return}navigator.geolocation.getCurrentPosition(ok,bad,{enableHighAccuracy:false,timeout:15000,maximumAge:600000})},{enableHighAccuracy:true,timeout:8000,maximumAge:0})}
+ function bad(e){var s2=document.getElementById("mo-st");if(s2&&(!S.loc||manual))s2.textContent=(e&&e.code===1)?"إذن الموقع مرفوض لهذا الموقع. فعّله من إعدادات المتصفح (على الآيفون: الإعدادات > الخصوصية > خدمات الموقع)، أو اضغط على الخريطة لتحديد موقعك":"تعذر الحصول على موقعك. تأكد أن خدمة الموقع شغالة أو اضغط على الخريطة لتحديد موقعك"}
+ navigator.geolocation.getCurrentPosition(ok,function(e){if(e&&e.code===1){bad(e);return}navigator.geolocation.getCurrentPosition(ok,bad,{enableHighAccuracy:false,timeout:15000,maximumAge:600000})},{enableHighAccuracy:true,timeout:8000,maximumAge:0})}
 function send(){var er=document.getElementById("mo-er");
  var rh=(new Date().getUTCHours()+3)%24;if(rh>=1&&rh<13){er.textContent="المطعم مغلق حالياً، نفتح الساعة ١ ظهراً. لا يمكن إرسال الطلب الآن، تقدر تتصفح القائمة وتجهز السلة.";return}
  var nm=(S.u.n||"").trim(),ph=(S.u.p||"").replace(/[\s\-]/g,"").replace(/[٠-٩]/g,function(d){return "٠١٢٣٤٥٦٧٨٩".indexOf(d)});
