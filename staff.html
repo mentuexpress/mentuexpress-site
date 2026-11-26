@@ -25,8 +25,11 @@ button.g{background:#2b2218;color:#f4ead6;border:1px solid #4a3a24}button.r{back
 .items{margin:8px 0;padding:8px 0;border-top:1px dashed #4a3a24;border-bottom:1px dashed #4a3a24}
 a{color:#d4a24c}.muted{color:#a8977a;font-size:14px}
 #rc{display:none}
-@media print{body>*:not(#rc){display:none!important}#rc{display:block;color:#000;background:#fff;width:72mm;font-size:14px;line-height:1.5;direction:rtl;padding:2mm}
-#rc h2{text-align:center;margin:0 0 4px}#rc hr{border:0;border-top:1px dashed #000}@page{size:80mm auto;margin:3mm}}
+@media print{html,body{background:#fff!important;color:#000!important;margin:0!important;padding:0!important;height:auto!important}
+body>*:not(#rc){display:none!important}
+#rc{display:block!important;position:static!important;color:#000!important;background:#fff!important;width:100%!important;max-width:72mm;margin:0;font-size:14px;line-height:1.5;direction:rtl;text-align:right;padding:0}
+#rc *{color:#000!important;background:none!important}
+#rc h2{text-align:center;margin:0 0 4px}#rc div,#rc b{display:block}#rc hr{border:0;border-top:1px dashed #000;margin:4px 0}@page{size:80mm auto;margin:3mm}}
 </style></head><body>
 <div id="lg" class="login"><h1>طلبات الفرع</h1>
 <label for="br">الفرع</label><select id="br"><option value="yarmouk">فرع حي اليرموك</option><option value="aqiq">فرع حي العقيق</option></select>
