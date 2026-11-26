@@ -8,7 +8,7 @@ function ctot(){var t=0;for(var k in S.cart){var x=ck(k);t+=x.d.o[x.o][1]*S.cart
 function olab(d,o){return d.single?"":AR(d.o[o][0])+" حبة"}
 var KEY="mentu_site_order";
 var S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
-S=S||{cart:{},br:null,loc:null};for(var _k in S.cart)if(String(_k).indexOf("_")<0){S.cart={};break}
+S=S||{cart:{},br:null,loc:null};S.u=S.u||{n:"",p:""};for(var _k in S.cart)if(String(_k).indexOf("_")<0){S.cart={};break}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function count(){var t=0;for(var k in S.cart)t+=S.cart[k];return t}
 var css=document.createElement("style");
@@ -30,6 +30,7 @@ css.textContent=".mo-add{position:absolute;left:12px;bottom:12px;width:44px;heig
 ".mo-st{font-size:12.5px;color:#f5b72e;margin:8px 0;min-height:18px}"+
 ".mo-go{display:block;width:100%;height:52px;border-radius:14px;border:0;background:#25a244;color:#fff;font-weight:700;font-size:16px;font-family:inherit;margin-top:14px;cursor:pointer}"+
 ".mo-er{color:#ff8a7a;font-size:12.5px;min-height:18px;margin-top:8px}"+
+".mo-in{display:block;width:100%;height:48px;margin-top:6px;border-radius:12px;border:1px solid rgba(253,249,244,.28);background:rgba(253,249,244,.08);color:#fdf9f4;font-size:16px;font-family:inherit;padding:0 12px;direction:rtl;box-sizing:border-box}.mo-loc{display:block;width:100%;height:42px;border-radius:12px;border:1px solid #d9a441;background:none;color:#f5b72e;font-size:14px;font-family:inherit;margin-bottom:8px;cursor:pointer}"+
 ".mo-cl{background:none;border:0;color:rgba(253,249,244,.55);font-size:12px;margin-top:10px;cursor:pointer;font-family:inherit}";
 document.head.appendChild(css);
 var bar=document.createElement("div");bar.className="mo-bar";bar.innerHTML='<button type="button"><span id="mo-bt"></span><span id="mo-bs">عرض السلة ‹</span></button>';
@@ -69,8 +70,8 @@ function draw(){
  if(!ks.length){sh.innerHTML='<div class="mo-h"><b>طلبك</b><button class="mo-x" id="mo-c">×</button></div><p style="text-align:center;padding:30px 0;color:rgba(253,249,244,.6)">السلة فارغة<br>اضغط على + في أي طبق لإضافته</p>';document.getElementById("mo-c").onclick=closeCart;return}
  var h='<div class="mo-h"><b>طلبك</b><button class="mo-x" id="mo-c">×</button></div>';
  ks.forEach(function(k,i){var x=ck(k),d=x.d;h+='<div class="mo-it"><img src="'+d.s+'"><span>'+d.n+(d.single?"":" - "+olab(d,x.o))+'<br><b style="color:#f5b72e;font-size:12.5px">'+AR(d.o[x.o][1]*S.cart[k])+' ر.س</b></span><div class="mo-q"><button data-i="'+i+'" data-d="1">+</button><b>'+AR(S.cart[k])+'</b><button data-i="'+i+'" data-d="-1">−</button></div></div>'});
- h+='<div style="display:flex;justify-content:space-between;padding:12px 0;font-weight:700;color:#f5b72e"><span>مجموع الطلب</span><span>'+AR(ctot())+' ر.س</span></div><div class="mo-lb">اختر الفرع</div><div class="mo-br"><div data-b="y" class="'+(S.br=="y"?"on":"")+'">'+BR.y.n+'</div><div data-b="a" class="'+(S.br=="a"?"on":"")+'">'+BR.a.n+'</div></div>';
- h+='<div class="mo-lb">موقع التوصيل في الرياض (اضغط على الخريطة لتحديد الدبوس)</div><div class="mo-map" id="mo-map"></div><div class="mo-st" id="mo-st">'+(S.loc?"الموقع المحدد: "+S.loc.lat.toFixed(5)+" ، "+S.loc.lng.toFixed(5):"")+'</div>';
+ h+='<div style="display:flex;justify-content:space-between;padding:12px 0;font-weight:700;color:#f5b72e"><span>مجموع الطلب</span><span>'+AR(ctot())+' ر.س</span></div><div class="mo-lb">الاسم</div><input class="mo-in" id="mo-n" type="text" autocomplete="name" value="'+esc(S.u.n)+'"><div class="mo-lb">رقم الجوال</div><input class="mo-in" id="mo-p" type="tel" inputmode="numeric" placeholder="05XXXXXXXX" autocomplete="tel" value="'+esc(S.u.p)+'"><div class="mo-lb">اختر الفرع</div><div class="mo-br"><div data-b="y" class="'+(S.br=="y"?"on":"")+'">'+BR.y.n+'</div><div data-b="a" class="'+(S.br=="a"?"on":"")+'">'+BR.a.n+'</div></div>';
+ h+='<div class="mo-lb">موقع التوصيل (اضغط على الخريطة أو حرّك الدبوس)</div><button class="mo-loc" id="mo-loc" type="button">📍 تحديد موقعي الحالي</button><div class="mo-map" id="mo-map"></div><div class="mo-st" id="mo-st">'+(S.loc?"الموقع المحدد: "+S.loc.lat.toFixed(5)+" ، "+S.loc.lng.toFixed(5):"")+'</div>';
  h+='<div class="mo-er" id="mo-er"></div><button class="mo-go" id="mo-go">إرسال الطلب عبر واتساب ✆</button><div style="text-align:center"><button class="mo-cl" id="mo-clr">تفريغ السلة</button></div>';
  sh.innerHTML=h;
  document.getElementById("mo-c").onclick=closeCart;
@@ -78,26 +79,39 @@ function draw(){
  sh.querySelectorAll("[data-b]").forEach(function(d){d.onclick=function(){S.br=d.getAttribute("data-b");save();draw()}});
  document.getElementById("mo-clr").onclick=function(){S.cart={};save();closeCart();paint()};
  document.getElementById("mo-go").onclick=send;
+ document.getElementById("mo-n").oninput=function(){S.u.n=this.value;save()};
+ document.getElementById("mo-p").oninput=function(){S.u.p=this.value;save()};
+ document.getElementById("mo-loc").onclick=function(){locate(1)};
  initMap()}
+var esc=function(x){return String(x).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
+var setPin=null;
+function locate(manual){var s=document.getElementById("mo-st");if(!navigator.geolocation){if(s)s.textContent="المتصفح لا يدعم تحديد الموقع، اضغط على الخريطة";return}
+ if(s)s.textContent="جاري تحديد موقعك الحالي...";
+ navigator.geolocation.getCurrentPosition(function(p){var ll={lat:p.coords.latitude,lng:p.coords.longitude};if(setPin)setPin(ll,"موقعك الحالي: ",1);else{S.loc=ll;save();var s2=document.getElementById("mo-st");if(s2)s2.textContent="موقعك الحالي: "+ll.lat.toFixed(5)+" ، "+ll.lng.toFixed(5)}},function(){var s2=document.getElementById("mo-st");if(s2&&!S.loc)s2.textContent="تعذر تحديد موقعك. فعّل الموقع في المتصفح أو اضغط على الخريطة"},{enableHighAccuracy:true,timeout:15000,maximumAge:0})}
 function send(){var er=document.getElementById("mo-er");
+ var nm=(S.u.n||"").trim(),ph=(S.u.p||"").replace(/[\s\-]/g,"").replace(/[٠-٩]/g,function(d){return "٠١٢٣٤٥٦٧٨٩".indexOf(d)});
+ if(!nm){er.textContent="الرجاء إدخال الاسم";return}
+ if(!/^05\d{8}$/.test(ph)){er.textContent="الرجاء إدخال رقم جوال صحيح من ١٠ أرقام يبدأ بـ 05";return}
  if(!S.br){er.textContent="الرجاء اختيار الفرع";return}
  if(!S.loc){er.textContent="الرجاء تحديد موقع التوصيل على الخريطة";return}
  var l=["السلام عليكم، أرغب بطلب من "+BR[S.br].n+":",""];
  Object.keys(S.cart).forEach(function(k){if(S.cart[k]>0){var x=ck(k),d=x.d;l.push("- "+d.n+(d.single?"":" ("+olab(d,x.o)+")")+" × "+AR(S.cart[k])+" = "+AR(d.o[x.o][1]*S.cart[k])+" ر.س")}});l.push("","مجموع الطلب: "+AR(ctot())+" ر.س");
- l.push("","موقع التوصيل: https://maps.google.com/?q="+S.loc.lat.toFixed(6)+","+S.loc.lng.toFixed(6),"","(طلب من موقع منتو اكسبرس)");
+ l.push("","الاسم: "+nm,"رقم الجوال: "+ph);l.push("","موقع التوصيل: https://maps.google.com/?q="+S.loc.lat.toFixed(6)+","+S.loc.lng.toFixed(6),"","(طلب من موقع منتو اكسبرس)");
  window.location.href="https://wa.me/"+BR[S.br].w+"?text="+encodeURIComponent(l.join("\n"))}
 var TMP=null;
-function initMap(){function run(){var el=document.getElementById("mo-map");if(!el)return;var c=S.loc?[S.loc.lat,S.loc.lng]:[24.7136,46.6753];var m=L.map(el).setView(c,S.loc?15:11);
+function initMap(){function run(){var el=document.getElementById("mo-map");if(!el)return;var c=S.loc?[S.loc.lat,S.loc.lng]:[24.7136,46.6753];var m=L.map(el).setView(c,S.loc?16:11);
  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap"}).addTo(m);
- var mk=S.loc?L.marker(c).addTo(m):null,cl=0;
- function setp(ll,t){S.loc={lat:ll.lat,lng:ll.lng};save();if(mk)mk.setLatLng(ll);else mk=L.marker(ll).addTo(m);var s=document.getElementById("mo-st");if(s)s.textContent=t+S.loc.lat.toFixed(5)+" ، "+S.loc.lng.toFixed(5);var e=document.getElementById("mo-er");if(e)e.textContent=""}
- m.on("click",function(e){cl=1;setp(e.latlng,"الموقع المحدد: ")});
- setTimeout(function(){m.invalidateSize()},150);
- if(!S.loc&&navigator.geolocation){var s=document.getElementById("mo-st");if(s)s.textContent="جاري تحديد موقعك الحالي...";
-  navigator.geolocation.getCurrentPosition(function(p){if(cl)return;var ll=L.latLng(p.coords.latitude,p.coords.longitude);m.setView(ll,16);setp(ll,"موقعك الحالي: ")},function(){var s=document.getElementById("mo-st");if(s&&!S.loc)s.textContent="تعذر تحديد موقعك. اختر موقع التوصيل على الخريطة"},{enableHighAccuracy:true,timeout:10000})}}
+ var mk=null;
+ function put(ll){if(mk)mk.setLatLng(ll);else{mk=L.marker(ll,{draggable:true}).addTo(m);mk.on("dragend",function(){var q=mk.getLatLng();setPin({lat:q.lat,lng:q.lng},"الموقع المحدد: ")})}}
+ setPin=function(ll,t,fly){S.loc={lat:ll.lat,lng:ll.lng};save();put(ll);if(fly)m.setView(ll,17);var s=document.getElementById("mo-st");if(s)s.textContent=t+S.loc.lat.toFixed(5)+" ، "+S.loc.lng.toFixed(5);var e=document.getElementById("mo-er");if(e)e.textContent=""};
+ if(S.loc)put(S.loc);
+ m.on("click",function(e){setPin(e.latlng,"الموقع المحدد: ")});
+ setTimeout(function(){m.invalidateSize()},200);
+ if(!S.loc)locate()}
  if(window.L){run();return}
+ var fail=function(){setPin=null;var el=document.getElementById("mo-map");if(el)el.innerHTML='<div style="padding:90px 14px;text-align:center;color:rgba(253,249,244,.7);font-size:13px">تعذر تحميل الخريطة. اضغط «تحديد موقعي الحالي» أعلاه.</div>'};
  if(!document.getElementById("mo-lcss")){var l=document.createElement("link");l.id="mo-lcss";l.rel="stylesheet";l.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(l)}
- var j=document.createElement("script");j.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";j.onload=run;document.head.appendChild(j)}
+ var j=document.createElement("script");j.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";j.onload=run;j.onerror=fail;document.head.appendChild(j)}
 new MutationObserver(function(ms){var go=0;ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType==1&&!(n.classList&&(n.classList.contains("mo-add")||n.classList.contains("mo-pr"))))go=1})});if(go)scan()}).observe(document.getElementById("root"),{childList:true,subtree:true});
 scan();
 })();
