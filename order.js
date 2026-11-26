@@ -56,7 +56,7 @@ function scan(){
 function drawPick(){var d=PK,sh=document.getElementById("mo-sh");
  var h='<div class="mo-h"><b>'+d.n+'</b><button class="mo-x" id="mo-c">×</button></div><div class="mo-br" style="flex-wrap:wrap;margin-top:14px">';
  d.o.forEach(function(x,i){h+='<div data-o="'+i+'" class="'+(i==pso?"on":"")+'" style="flex:1 1 30%">'+AR(x[0])+' حبة<br><b>'+AR(x[1])+' ر.س</b></div>'});
- h+='</div><div class="mo-q" style="justify-content:center;margin:18px 0;font-size:20px"><button data-q="1">+</button><b>'+AR(pq)+'</b><button data-q="-1">−</button></div><button class="mo-go" id="mo-ad">أضف إلى السلة · '+AR(d.o[pso][1]*pq)+' ر.س</button>';
+ h+='</div><div class="mo-q" style="justify-content:center;margin:18px 0;font-size:20px"><button data-q="1">+</button><b>'+AR(pq)+'</b><button data-q="-1">−</button></div><button class="mo-go" id="mo-ad">أضف إلى السلة - '+AR(d.o[pso][1]*pq)+' ر.س</button>';
  sh.innerHTML=h;document.getElementById("mo-c").onclick=closeCart;
  sh.querySelectorAll("[data-o]").forEach(function(e){e.onclick=function(){pso=+e.getAttribute("data-o");drawPick()}});
  sh.querySelectorAll("[data-q]").forEach(function(e){e.onclick=function(){pq=Math.max(1,pq+(+e.getAttribute("data-q")));drawPick()}});
