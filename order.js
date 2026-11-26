@@ -42,7 +42,7 @@ var ov=document.createElement("div");ov.className="mo-ov";ov.innerHTML='<div cla
 document.body.appendChild(bar);document.body.appendChild(ov);
 bar.firstChild.onclick=function(){openCart()};
 ov.onclick=function(e){if(e.target==ov)closeCart()};
-var PK=null,pso=0,pq=1;
+var PK=null,pso=0,pq=0;
 function addC(id,q,o){var k=id+"_"+(o||0);S.cart[k]=(S.cart[k]||0)+q;save();paint()}
 function scan(){
  document.querySelectorAll("img.mentu-card-img").forEach(function(im){
@@ -50,19 +50,19 @@ function scan(){
   var card=im.closest(".mentu-card");if(!card||card.querySelector(".mo-add"))return;
   if(getComputedStyle(card).position=="static")card.style.position="relative";
   var b=document.createElement("button");b.type="button";b.className="mo-add";b.setAttribute("data-id",d.id);b.setAttribute("aria-label","أضف "+d.n);b.textContent="+";
-  b.onclick=function(e){e.preventDefault();e.stopPropagation();if(d.single){addC(d.id,1,0)}else{PK=d;pso=0;pq=1;drawPick();ov.classList.add("open")}};
+  b.onclick=function(e){e.preventDefault();e.stopPropagation();if(d.single){addC(d.id,1,0)}else{PK=d;pso=0;pq=0;drawPick();ov.classList.add("open")}};
   var pl=document.createElement("div");pl.className="mo-pr";pl.innerHTML=(d.single?"":"من ")+AR(d.o[0][1])+" ر.س";card.appendChild(pl);
   card.appendChild(b)});
  paint()}
 function drawPick(){var d=PK,sh=document.getElementById("mo-sh");
  var h='<div class="mo-h"><b>'+d.n+'</b><button class="mo-x" id="mo-c">×</button></div><div class="mo-br" style="flex-wrap:wrap;margin-top:14px">';
  d.o.forEach(function(x,i){h+='<div data-o="'+i+'" class="'+(i==pso?"on":"")+'" style="flex:1 1 30%">'+AR(x[0])+' حبة<br><b>'+AR(x[1])+' ر.س</b></div>'});
- h+='</div><div class="mo-q" style="justify-content:center;margin:18px 0;font-size:20px;position:relative"><button data-q="1">+</button><b>'+AR(pq)+'</b><button data-q="-1">−</button><button class="mo-del" id="mo-tr" aria-label="حذف من السلة" style="position:absolute;left:18px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 10v7M14 10v7"/></svg></button></div><button class="mo-go" id="mo-ad">أضف إلى السلة - '+AR(d.o[pso][1]*pq)+' ر.س</button>';
+ h+='</div><div class="mo-q" style="justify-content:center;margin:18px 0;font-size:20px;position:relative"><button data-q="1">+</button><b>'+AR(pq)+'</b><button data-q="-1">−</button><button class="mo-del" id="mo-tr" aria-label="حذف من السلة" style="position:absolute;left:18px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 10v7M14 10v7"/></svg></button></div><button class="mo-go" id="mo-ad"'+(pq?"":" disabled style=\"opacity:.4;cursor:default\"")+'>'+(pq?"أضف إلى السلة - "+AR(d.o[pso][1]*pq)+" ر.س":"اختر الكمية")+'</button>';
  sh.innerHTML=h;document.getElementById("mo-c").onclick=closeCart;
  sh.querySelectorAll("[data-o]").forEach(function(e){e.onclick=function(){pso=+e.getAttribute("data-o");drawPick()}});
- sh.querySelectorAll("[data-q]").forEach(function(e){e.onclick=function(){pq=Math.max(1,pq+(+e.getAttribute("data-q")));drawPick()}});
- document.getElementById("mo-tr").onclick=function(){var k=d.id+"_"+pso;if(S.cart[k]){delete S.cart[k];save();paint()}pq=1;pso=0;closeCart()};
- document.getElementById("mo-ad").onclick=function(){addC(d.id,pq,pso);closeCart()}}
+ sh.querySelectorAll("[data-q]").forEach(function(e){e.onclick=function(){pq=Math.max(0,pq+(+e.getAttribute("data-q")));drawPick()}});
+ document.getElementById("mo-tr").onclick=function(){var k=d.id+"_"+pso;if(S.cart[k]){delete S.cart[k];save();paint()}pq=0;pso=0;closeCart()};
+ document.getElementById("mo-ad").onclick=function(){if(!pq)return;addC(d.id,pq,pso);closeCart()}}
 function paint(){
  document.querySelectorAll(".mo-add").forEach(function(b){var q=0;for(var k in S.cart)if(k.split("_")[0]==b.getAttribute("data-id"))q+=S.cart[k];var cn="mo-add"+(q?" on":""),tx=q?AR(q):"+";if(b.className!=cn)b.className=cn;if(b.textContent!=tx)b.textContent=tx});
  var c=count();bar.style.display="flex";var t=document.getElementById("mo-bt");if(t)t.textContent=c?"🛒 سلتك: "+AR(c)+(c==1?" طبق":" أطباق"):"🛒 اطلب الآن";
