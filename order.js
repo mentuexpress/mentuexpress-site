@@ -72,7 +72,7 @@ function draw(){
  ks.forEach(function(k,i){var x=ck(k),d=x.d;h+='<div class="mo-it"><img src="'+d.s+'"><span>'+d.n+(d.single?"":" - "+olab(d,x.o))+'<br><b style="color:#f5b72e;font-size:12.5px">'+AR(d.o[x.o][1]*S.cart[k])+' ر.س</b></span><div class="mo-q"><button data-i="'+i+'" data-d="1">+</button><b>'+AR(S.cart[k])+'</b><button data-i="'+i+'" data-d="-1">−</button></div></div>'});
  h+='<div style="display:flex;justify-content:space-between;padding:12px 0;font-weight:700;color:#f5b72e"><span>مجموع الطلب</span><span>'+AR(ctot())+' ر.س</span></div><div class="mo-lb">الاسم</div><input class="mo-in" id="mo-n" type="text" autocomplete="name" value="'+esc(S.u.n)+'"><div class="mo-lb">رقم الجوال</div><input class="mo-in" id="mo-p" type="tel" inputmode="numeric" placeholder="05XXXXXXXX" autocomplete="tel" value="'+esc(S.u.p)+'"><div class="mo-lb">اختر الفرع</div><div class="mo-br"><div data-b="y" class="'+(S.br=="y"?"on":"")+'">'+BR.y.n+'</div><div data-b="a" class="'+(S.br=="a"?"on":"")+'">'+BR.a.n+'</div></div>';
  h+='<div class="mo-lb">موقع التوصيل (اضغط على الخريطة أو حرّك الدبوس)</div><button class="mo-loc" id="mo-loc" type="button">📍 تحديد موقعي الحالي</button><div class="mo-map" id="mo-map"></div><div class="mo-st" id="mo-st">'+(S.loc?"الموقع المحدد: "+S.loc.lat.toFixed(5)+" ، "+S.loc.lng.toFixed(5):"")+'</div>';
- h+='<div style="text-align:center;font-size:12.5px;color:#f5b72e;padding:6px 0">كل ٥ طلبات فوق ٦٠ ريال، السادس طبق حجازي مجاناً</div>';
+ h+='<div style="text-align:center;font-size:12.5px;color:#f5b72e;padding:6px 0">كل ٥ طلبات فوق ٦٠ ريال، السادس مشكل حجازي ٤٠ حبة مجاناً</div>';
  h+='<div class="mo-er" id="mo-er"></div><button class="mo-go" id="mo-go">إرسال الطلب عبر واتساب ✆</button><div style="text-align:center"><button class="mo-cl" id="mo-clr">تفريغ السلة</button></div>';
  sh.innerHTML=h;
  document.getElementById("mo-c").onclick=closeCart;
@@ -104,7 +104,7 @@ function send(){var er=document.getElementById("mo-er");
  var l=["السلام عليكم، أرغب بطلب من "+BR[S.br].n+":",""];
  Object.keys(S.cart).forEach(function(k){if(S.cart[k]>0){var x=ck(k),d=x.d;l.push("- "+d.n+(d.single?"":" ("+olab(d,x.o)+")")+" × "+AR(S.cart[k])+" = "+AR(d.o[x.o][1]*S.cart[k])+" ر.س")}});l.push("","مجموع الطلب: "+AR(ctot())+" ر.س");
  l.push("","الاسم: "+nm,"رقم الجوال: "+ph);l.push("","موقع التوصيل: https://maps.google.com/?q="+S.loc.lat.toFixed(6)+","+S.loc.lng.toFixed(6),"","(طلب من موقع منتو اكسبرس)");
- if(r&&r.reward)l.push("","عرض الولاء: هذا الطلب السادس، طبق حجازي مجاناً");else if(r&&r.qualifying)l.push("","عرض الولاء: طلب رقم "+AR(r.qual_no)+(r.to_next>0?" (باقي "+AR(r.to_next)+" طلبات للطبق المجاني)":" (الطلب القادم عليه طبق حجازي مجاناً)"));
+ if(r&&r.reward)l.push("","عرض الولاء: هذا الطلب السادس، مشكل حجازي ٤٠ حبة مجاناً");else if(r&&r.qualifying)l.push("","عرض الولاء: طلب رقم "+AR(r.qual_no)+(r.to_next>0?" (باقي "+AR(r.to_next)+" طلبات للمشكل الحجازي المجاني)":" (الطلب القادم مشكل حجازي ٤٠ حبة مجاناً)"));
  window.location.href="https://wa.me/"+BR[S.br].w+"?text="+encodeURIComponent(l.join("\n"))}}
 var TMP=null;
 function initMap(){function run(){var el=document.getElementById("mo-map");if(!el)return;var c=S.loc?[S.loc.lat,S.loc.lng]:[24.7136,46.6753];var m=L.map(el).setView(c,S.loc?16:11);
@@ -138,3 +138,7 @@ scan();
  document.body.appendChild(m);document.body.appendChild(b);
 })();
 })();
+
+;(function(){var css=document.createElement("style");css.textContent=".mo-promo{margin:14px auto 0;max-width:1100px;width:calc(100% - 28px);box-sizing:border-box;text-align:center;direction:rtl;background:rgba(245,183,46,.12);border:1px solid #f5b72e;border-radius:14px;padding:12px 16px;color:#f5b72e;font-weight:700;font-size:16px;line-height:1.6}.mo-promo small{display:block;font-weight:400;font-size:13px;color:inherit;opacity:.85}";document.head.appendChild(css);
+function put(){if(document.querySelector(".mo-promo"))return;var h=document.querySelector(".mentu-heroimg");if(!h||!h.parentNode)return;var d=document.createElement("div");d.className="mo-promo";d.innerHTML="كل ٥ طلبات فوق ٦٠ ريال<small>الطلب السادس مشكل حجازي ٤٠ حبة مجاناً</small>";h.parentNode.insertBefore(d,h.nextSibling)}
+put();new MutationObserver(put).observe(document.documentElement,{childList:true,subtree:true})})();
