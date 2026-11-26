@@ -114,4 +114,19 @@ function initMap(){function run(){var el=document.getElementById("mo-map");if(!e
  var j=document.createElement("script");j.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";j.onload=run;j.onerror=fail;document.head.appendChild(j)}
 new MutationObserver(function(ms){var go=0;ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType==1&&!(n.classList&&(n.classList.contains("mo-add")||n.classList.contains("mo-pr"))))go=1})});if(go)scan()}).observe(document.getElementById("root"),{childList:true,subtree:true});
 scan();
+
+/* floating contact button */
+(function(){
+ var st=document.createElement("style");
+ st.textContent=".mc-fab{position:fixed;right:14px;bottom:calc(86px + env(safe-area-inset-bottom));width:54px;height:54px;border-radius:50%;border:0;background:#d9a441;color:#1a100a;font-size:26px;line-height:1;cursor:pointer;z-index:8900;box-shadow:0 3px 14px rgba(0,0,0,.55);font-family:inherit}"+
+ ".mc-menu{position:fixed;right:14px;align-items:flex-end;bottom:calc(150px + env(safe-area-inset-bottom));z-index:8900;display:none;flex-direction:column;gap:8px;direction:rtl}.mc-menu.open{display:flex}"+
+ ".mc-menu a{display:block;background:rgba(26,16,10,.96);color:#fdf9f4;border:1px solid #d9a441;border-radius:14px;padding:11px 16px;font-size:14px;text-decoration:none;font-family:inherit;white-space:nowrap}.mc-menu a b{color:#f5b72e;font-weight:600}";
+ document.head.appendChild(st);
+ var m=document.createElement("div");m.className="mc-menu";
+ m.innerHTML='<a href="tel:0551296445"><b>اتصال</b> فرع حي اليرموك</a><a href="tel:0509404366"><b>اتصال</b> فرع حي العقيق</a><a href="https://wa.me/966551296445" target="_blank" rel="noopener"><b>واتساب</b> فرع حي اليرموك</a><a href="https://wa.me/966509404366" target="_blank" rel="noopener"><b>واتساب</b> فرع حي العقيق</a>';
+ var b=document.createElement("button");b.type="button";b.className="mc-fab";b.setAttribute("aria-label","تواصل معنا");b.textContent="✆";
+ b.onclick=function(e){e.stopPropagation();m.classList.toggle("open");b.textContent=m.classList.contains("open")?"×":"✆"};
+ document.addEventListener("click",function(e){if(m.classList.contains("open")&&!m.contains(e.target)){m.classList.remove("open");b.textContent="✆"}});
+ document.body.appendChild(m);document.body.appendChild(b);
+})();
 })();
