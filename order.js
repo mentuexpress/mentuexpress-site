@@ -105,10 +105,10 @@ function send(){var er=document.getElementById("mo-er");
  try{var ac=window.AbortController?new AbortController():null;setTimeout(function(){if(ac)ac.abort();go(null)},5000);
  fetch(DBU+"/rest/v1/rpc/place_order",{method:"POST",headers:{"apikey":DBK,"Content-Type":"application/json"},body:JSON.stringify({p_name:nm,p_phone:ph,p_branch:S.br=="a"?"aqiq":"yarmouk",p_total:ctot(),p_items:items,p_lat:S.loc.lat,p_lng:S.loc.lng,p_fee:(dfee()||{fee:0}).fee,p_km:+(dfee()||{km:0}).km.toFixed(2)}),signal:ac?ac.signal:undefined}).then(function(x){return x.ok?x.json():null}).then(go,function(){go(null)})}catch(e){go(null)}
  function compose(r){
- var l=["السلام عليكم، أرغب بطلب من "+BR[S.br].n+":",""];
+ var l=["السلام عليكم، أرغب بطلب من "+BR[S.br].n+":"+(r&&r.id?" (طلب رقم #"+AR(r.id)+")":""),""];
  Object.keys(S.cart).forEach(function(k){if(S.cart[k]>0){var x=ck(k),d=x.d;l.push("- "+d.n+(d.single?"":" ("+olab(d,x.o)+")")+" × "+AR(S.cart[k])+" = "+AR(d.o[x.o][1]*S.cart[k])+" ر.س")}});var DF=dfee()||{km:0,fee:0};l.push("","مجموع الطلب: "+AR(ctot())+" ر.س","رسوم التوصيل ("+AR(DF.km.toFixed(1))+" كم): "+(DF.fee?AR(DF.fee)+" ر.س":"مجاني"),"الإجمالي مع التوصيل: "+AR(ctot()+DF.fee)+" ر.س");
  l.push("","الاسم: "+nm,"رقم الجوال: "+ph);l.push("","موقع التوصيل: https://maps.google.com/?q="+S.loc.lat.toFixed(6)+","+S.loc.lng.toFixed(6),"","(طلب من موقع منتو اكسبرس)");
- if(r&&r.reward)l.push("","عرض الولاء: هذا الطلب السادس، مشكل حجازي ٤٠ حبة مجاناً");else if(r&&r.qualifying)l.push("","عرض الولاء: طلب رقم "+AR(r.qual_no)+(r.to_next>0?" (باقي "+AR(r.to_next)+" طلبات للمشكل الحجازي المجاني)":" (الطلب القادم مشكل حجازي ٤٠ حبة مجاناً)"));
+ if(r&&r.reward)l.push("","عرض الولاء (يُحتسب بعد تأكيد الفرع): هذا الطلب السادس، مشكل حجازي ٤٠ حبة مجاناً");else if(r&&r.qualifying)l.push("","عرض الولاء (يُحتسب بعد تأكيد الفرع): طلب رقم "+AR(r.qual_no)+(r.to_next>0?" (باقي "+AR(r.to_next)+" طلبات للمشكل الحجازي المجاني)":" (الطلب القادم مشكل حجازي ٤٠ حبة مجاناً)"));
  window.location.href="https://wa.me/"+BR[S.br].w+"?text="+encodeURIComponent(l.join("\n"))}}
 var TMP=null;
 function initMap(){function run(){var el=document.getElementById("mo-map");if(!el)return;var c=S.loc?[S.loc.lat,S.loc.lng]:[24.7136,46.6753];var m=L.map(el).setView(c,S.loc?16:11);
