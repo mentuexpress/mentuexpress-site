@@ -77,7 +77,9 @@ function render(o,first){data=o;var ids=o.filter(function(x){return x.status==="
   var a=t(c,"div",null,"acts");
   if(x.status==="pending"){t(a,"button","تأكيد وطباعة").onclick=function(){setS(x,"confirmed",true)};t(a,"button","إلغاء","r").onclick=function(){if(confirm("إلغاء الطلب؟"))setS(x,"cancelled",false)}}
   if(x.status==="confirmed")t(a,"button","طباعة","g").onclick=function(){pr(x)}
+  t(a,"button","🗑 حذف","g").onclick=function(){if(confirm(x.status==="confirmed"?"حذف الطلب #"+AR(x.id)+" نهائياً؟ سيُحذف من احتساب الولاء أيضاً.":"حذف الطلب #"+AR(x.id)+" نهائياً؟"))del(x)}
  })}
+function del(x){rpc("staff_delete_order",{p_branch:br,p_pin:pin,p_id:x.id}).then(function(r){if(r.error){alert("تعذر الحذف: "+r.error);return}poll()},function(){alert("لا يوجد اتصال")})}
 function r2(c,a,b){var r=t(c,"div",null,"row");t(r,"span",a);t(r,"b",b)}
 function setS(x,s,print){rpc("staff_set_status",{p_branch:br,p_pin:pin,p_id:x.id,p_status:s}).then(function(r){
  if(r.error){alert(r.error==="expired"?"الطلب منتهي (أكثر من ٢٤ ساعة)":"تعذر التنفيذ: "+r.error);poll();return}
