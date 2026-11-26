@@ -40,11 +40,6 @@ ov.onclick=function(e){if(e.target==ov)closeCart()};
 var PK=null,pso=0,pq=1;
 function addC(id,q,o){var k=id+"_"+(o||0);S.cart[k]=(S.cart[k]||0)+q;save();paint()}
 function scan(){
- var first=document.querySelector("img.mentu-card-img");
- if(first){var grid=first.closest(".mentu-grid");
-  if(grid&&!grid.querySelector("[data-extra]")){M.forEach(function(d){if(d.alt)return;
-   var w=document.createElement("div");w.setAttribute("data-extra","1");
-   w.innerHTML='<div class="mentu-card"><img class="mentu-card-img" src="'+d.s+'" alt="'+d.n+'" loading="lazy"></div>';grid.appendChild(w)})}}
  document.querySelectorAll("img.mentu-card-img").forEach(function(im){
   var d=BYALT[im.alt]||M.filter(function(x){return !x.alt&&x.n==im.alt})[0];if(!d)return;
   var card=im.closest(".mentu-card");if(!card||card.querySelector(".mo-add"))return;
