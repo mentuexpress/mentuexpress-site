@@ -68,7 +68,7 @@ function render(o,first){data=o;var ids=o.filter(function(x){return x.status==="
   var h=t(c,"div",null,"row");t(h,"b","طلب #"+AR(x.id));var sl={pending:"جديد",confirmed:"مؤكد",cancelled:"ملغي",expired:"منتهي"};t(h,"span",sl[x.status]||x.status,"badge "+x.status);
   t(c,"div",tm(x.created_at),"muted");
   t(c,"div",x.name);var p=t(c,"a",x.phone);p.href="tel:"+String(x.phone).replace(/[^\d+]/g,"");
-  var it=t(c,"div",null,"items");(x.items||[]).forEach(function(i){t(it,"div","• "+i.n+(i.o?" ("+i.o+")":"")+" × "+AR(i.q)+" = "+AR(i.s)+" ر.س")});
+  var it=t(c,"div",null,"items");(x.items||[]).forEach(function(i){t(it,"div","• "+i.n+(i.o?" ("+ol(i.o)+")":"")+" × "+AR(i.q)+" = "+AR(i.s)+" ر.س")});
   var f=Number(x.delivery_fee)||0,tt=Number(x.total)||0;
   r2(c,"المجموع",AR(tt)+" ر.س");r2(c,"التوصيل ("+AR(Number(x.distance_km||0).toFixed(1))+" كم)",f?AR(f)+" ر.س":"مجاني");r2(c,"الإجمالي",AR(tt+f)+" ر.س");
   if(x.lat&&x.lng){var m=t(c,"a","موقع التوصيل على الخريطة");m.href="https://maps.google.com/?q="+x.lat+","+x.lng;m.target="_blank";m.rel="noopener"}
@@ -80,6 +80,7 @@ function render(o,first){data=o;var ids=o.filter(function(x){return x.status==="
   t(a,"button","🗑 حذف","g").onclick=function(){if(confirm(x.status==="confirmed"?"حذف الطلب #"+AR(x.id)+" نهائياً؟ سيُحذف من احتساب الولاء أيضاً.":"حذف الطلب #"+AR(x.id)+" نهائياً؟"))del(x)}
  })}
 function del(x){rpc("staff_delete_order",{p_branch:br,p_pin:pin,p_id:x.id}).then(function(r){if(r.error){alert("تعذر الحذف: "+r.error);return}poll()},function(){alert("لا يوجد اتصال")})}
+function ol(o){return /^\d+$/.test(String(o))?AR(o)+" حبة":o}
 function r2(c,a,b){var r=t(c,"div",null,"row");t(r,"span",a);t(r,"b",b)}
 function setS(x,s,print){rpc("staff_set_status",{p_branch:br,p_pin:pin,p_id:x.id,p_status:s}).then(function(r){
  if(r.error){alert(r.error==="expired"?"الطلب منتهي (أكثر من ٢٤ ساعة)":"تعذر التنفيذ: "+r.error);poll();return}
@@ -89,7 +90,7 @@ function bc(txt){var P="212222,222122,222221,121223,121322,131222,122213,122312,
  var svg=document.createElementNS(ns,"svg");svg.setAttribute("viewBox","0 0 "+N+" 40");svg.setAttribute("preserveAspectRatio","none");svg.style.cssText="display:block;width:100%;height:16mm;margin:2mm 0";
  w.forEach(function(d,k){if(k%2===0){var r=document.createElementNS(ns,"rect");r.setAttribute("x",X);r.setAttribute("y",0);r.setAttribute("width",d);r.setAttribute("height",40);r.setAttribute("fill","#000");svg.appendChild(r)}X+=d});return svg}
 function pr(x){var R=$("rc");R.textContent="";R.appendChild(bc(String(x.id)));t(R,"div","#"+x.id,"num");t(R,"h2","منتو اكسبرس");t(R,"div",NM[br]);t(R,"div","طلب #"+AR(x.id)+" - "+tm(x.created_at));t(R,"hr");
- t(R,"div",x.name);t(R,"div",x.phone);t(R,"hr");(x.items||[]).forEach(function(i){t(R,"div",i.n+(i.o?" ("+i.o+")":"")+" × "+AR(i.q)+" = "+AR(i.s))});
+ t(R,"div",x.name);t(R,"div",x.phone);t(R,"hr");(x.items||[]).forEach(function(i){t(R,"div",i.n+(i.o?" ("+ol(i.o)+")":"")+" × "+AR(i.q)+" = "+AR(i.s))});
  var f=Number(x.delivery_fee)||0,tt=Number(x.total)||0;t(R,"hr");t(R,"div","المجموع: "+AR(tt)+" ر.س");if(f)t(R,"div","التوصيل: "+AR(f)+" ر.س");t(R,"b","الإجمالي: "+AR(tt+f)+" ر.س");
  setTimeout(function(){window.print()},100)}
 $("go").onclick=login;$("pin").onkeydown=function(e){if(e.key==="Enter")login()};$("out").onclick=logout;
