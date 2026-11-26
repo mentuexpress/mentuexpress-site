@@ -146,3 +146,11 @@ scan();
 ;(function(){var css=document.createElement("style");css.textContent=".mo-promo{margin:14px auto 0;max-width:1100px;width:calc(100% - 28px);box-sizing:border-box;text-align:center;direction:rtl;background:rgba(245,183,46,.12);border:1px solid #f5b72e;border-radius:14px;padding:12px 16px;color:#f5b72e;font-weight:700;font-size:16px;line-height:1.6}.mo-promo small{display:block;font-weight:400;font-size:13px;color:inherit;opacity:.85}";document.head.appendChild(css);
 function put(){if(document.querySelector(".mo-promo"))return;var h=document.querySelector(".mentu-heroimg");if(!h||!h.parentNode)return;var d=document.createElement("div");d.className="mo-promo";d.innerHTML="كل ٥ طلبات فوق ٦٠ ريال<small>الطلب السادس مشكل حجازي ٤٠ حبة مجاناً</small>";h.parentNode.insertBefore(d,h.nextSibling)}
 put();new MutationObserver(put).observe(document.documentElement,{childList:true,subtree:true})})();
+;(function(){var ALTS=["صحن منتو حجازي باللحم","يغمش حجازي","فرموزة حجازية بالسمسم","بف محشو بالدجاج","ورق عنب محشو","طبق حجازي مشكل"];
+function top(){if(document.querySelector(".mo-top"))return;var first=document.querySelector(".mentu-section");if(!first||!first.parentNode)return;
+ var src=ALTS.map(function(a){var im=[].filter.call(first.parentNode.querySelectorAll("img.mentu-card-img"),function(i){return i.alt==a&&!i.closest(".mo-top")})[0];return im&&im.closest(".mentu-card")&&im.closest(".mentu-card").parentNode});
+ if(src.some(function(x){return !x}))return;
+ var sec=document.createElement("section");sec.className="mentu-section mo-top";var h=document.createElement("h2");h.className="mentu-heading";h.textContent="الأكثر طلباً";var g=document.createElement("div");g.className="mentu-grid";
+ src.forEach(function(w){var c=w.cloneNode(true);c.querySelectorAll(".mo-add,.mo-pr").forEach(function(e){e.remove()});c.querySelectorAll(".mentu-card").forEach(function(e){e.classList.remove("is-pending")});g.appendChild(c)});
+ sec.appendChild(h);sec.appendChild(g);first.parentNode.insertBefore(sec,first)}
+top();new MutationObserver(top).observe(document.documentElement,{childList:true,subtree:true})})();
