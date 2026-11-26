@@ -72,6 +72,7 @@ function draw(){
  ks.forEach(function(k,i){var x=ck(k),d=x.d;h+='<div class="mo-it"><img src="'+d.s+'"><span>'+d.n+(d.single?"":" - "+olab(d,x.o))+'<br><b style="color:#f5b72e;font-size:12.5px">'+AR(d.o[x.o][1]*S.cart[k])+' ر.س</b></span><div class="mo-q"><button data-i="'+i+'" data-d="1">+</button><b>'+AR(S.cart[k])+'</b><button data-i="'+i+'" data-d="-1">−</button></div></div>'});
  h+='<div style="display:flex;justify-content:space-between;padding:12px 0;font-weight:700;color:#f5b72e"><span>مجموع الطلب</span><span>'+AR(ctot())+' ر.س</span></div><div class="mo-lb">الاسم</div><input class="mo-in" id="mo-n" type="text" autocomplete="name" value="'+esc(S.u.n)+'"><div class="mo-lb">رقم الجوال</div><input class="mo-in" id="mo-p" type="tel" inputmode="numeric" placeholder="05XXXXXXXX" autocomplete="tel" value="'+esc(S.u.p)+'"><div class="mo-lb">اختر الفرع</div><div class="mo-br"><div data-b="y" class="'+(S.br=="y"?"on":"")+'">'+BR.y.n+'</div><div data-b="a" class="'+(S.br=="a"?"on":"")+'">'+BR.a.n+'</div></div>';
  h+='<div class="mo-lb">موقع التوصيل (اضغط على الخريطة أو حرّك الدبوس)</div><button class="mo-loc" id="mo-loc" type="button">📍 تحديد موقعي الحالي</button><div class="mo-map" id="mo-map"></div><div class="mo-st" id="mo-st">'+(S.loc?"الموقع المحدد: "+S.loc.lat.toFixed(5)+" ، "+S.loc.lng.toFixed(5):"")+'</div>';
+ h+='<div style="text-align:center;font-size:12.5px;color:#f5b72e;padding:6px 0">كل ٥ طلبات فوق ٦٠ ريال، السادس طبق حجازي مجاناً</div>';
  h+='<div class="mo-er" id="mo-er"></div><button class="mo-go" id="mo-go">إرسال الطلب عبر واتساب ✆</button><div style="text-align:center"><button class="mo-cl" id="mo-clr">تفريغ السلة</button></div>';
  sh.innerHTML=h;
  document.getElementById("mo-c").onclick=closeCart;
@@ -94,10 +95,17 @@ function send(){var er=document.getElementById("mo-er");
  if(!/^05\d{8}$/.test(ph)){er.textContent="الرجاء إدخال رقم جوال صحيح من ١٠ أرقام يبدأ بـ 05";return}
  if(!S.br){er.textContent="الرجاء اختيار الفرع";return}
  if(!S.loc){er.textContent="الرجاء تحديد موقع التوصيل على الخريطة";return}
+ if(window._mob)return;window._mob=1;var items=[];Object.keys(S.cart).forEach(function(k){if(S.cart[k]>0){var x=ck(k);items.push({n:x.d.n,o:x.d.single?"":x.d.o[x.o][0],q:S.cart[k],s:x.d.o[x.o][1]*S.cart[k]})}});
+ var DBU="https://cdqqxjbadgivujibehzt.supabase.co",DBK="sb_publishable_dpe06zJ0jZ68-ZEVonhqAQ_7DkEXOjS",done=false;
+ function go(r){if(done)return;done=true;window._mob=0;compose(r)}
+ try{var ac=window.AbortController?new AbortController():null;setTimeout(function(){if(ac)ac.abort();go(null)},5000);
+ fetch(DBU+"/rest/v1/rpc/place_order",{method:"POST",headers:{"apikey":DBK,"Content-Type":"application/json"},body:JSON.stringify({p_name:nm,p_phone:ph,p_branch:S.br=="a"?"aqiq":"yarmouk",p_total:ctot(),p_items:items,p_lat:S.loc.lat,p_lng:S.loc.lng}),signal:ac?ac.signal:undefined}).then(function(x){return x.ok?x.json():null}).then(go,function(){go(null)})}catch(e){go(null)}
+ function compose(r){
  var l=["السلام عليكم، أرغب بطلب من "+BR[S.br].n+":",""];
  Object.keys(S.cart).forEach(function(k){if(S.cart[k]>0){var x=ck(k),d=x.d;l.push("- "+d.n+(d.single?"":" ("+olab(d,x.o)+")")+" × "+AR(S.cart[k])+" = "+AR(d.o[x.o][1]*S.cart[k])+" ر.س")}});l.push("","مجموع الطلب: "+AR(ctot())+" ر.س");
  l.push("","الاسم: "+nm,"رقم الجوال: "+ph);l.push("","موقع التوصيل: https://maps.google.com/?q="+S.loc.lat.toFixed(6)+","+S.loc.lng.toFixed(6),"","(طلب من موقع منتو اكسبرس)");
- window.location.href="https://wa.me/"+BR[S.br].w+"?text="+encodeURIComponent(l.join("\n"))}
+ if(r&&r.reward)l.push("","عرض الولاء: هذا الطلب السادس، طبق حجازي مجاناً");else if(r&&r.qualifying)l.push("","عرض الولاء: طلب رقم "+AR(r.qual_no)+(r.to_next>0?" (باقي "+AR(r.to_next)+" طلبات للطبق المجاني)":" (الطلب القادم عليه طبق حجازي مجاناً)"));
+ window.location.href="https://wa.me/"+BR[S.br].w+"?text="+encodeURIComponent(l.join("\n"))}}
 var TMP=null;
 function initMap(){function run(){var el=document.getElementById("mo-map");if(!el)return;var c=S.loc?[S.loc.lat,S.loc.lng]:[24.7136,46.6753];var m=L.map(el).setView(c,S.loc?16:11);
  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap"}).addTo(m);
