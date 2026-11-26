@@ -4,6 +4,9 @@ var M=window.MENU||[],BYALT={},BYID={};
 M.forEach(function(d){BYID[d.id]=d;if(d.alt)BYALT[d.alt]=d});
 function AR(n){return String(n).replace(/\d/g,function(d){return "٠١٢٣٤٥٦٧٨٩"[d]})}
 function ck(k){var a=String(k).split("_");return {d:BYID[a[0]],o:+a[1]||0}}
+var BRC={y:[24.8120591,46.7989583],a:[24.7852511,46.632454]};
+function dfee(){if(!S.br||!S.loc)return null;var c=BRC[S.br],R=6371,r=Math.PI/180,dl=(S.loc.lat-c[0])*r,dn=(S.loc.lng-c[1])*r,x=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(c[0]*r)*Math.cos(S.loc.lat*r)*Math.sin(dn/2)*Math.sin(dn/2),km=2*R*Math.asin(Math.sqrt(x));return {km:km,fee:km>5?10:0}}
+function updFee(){var e=document.getElementById("mo-fee");if(!e)return;var f=dfee(),h='<div style="font-size:12.5px;opacity:.75;padding:2px 0 6px">التوصيل مجاني حتى ٥ كم من الفرع، وأبعد من ذلك ١٠ ر.س</div>';if(f){h='<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:14px"><span>رسوم التوصيل ('+AR(f.km.toFixed(1))+' كم)</span><span>'+(f.fee?AR(f.fee)+' ر.س':"مجاني")+'</span></div><div style="display:flex;justify-content:space-between;padding:6px 0 10px;font-weight:700;color:#f5b72e"><span>الإجمالي مع التوصيل</span><span>'+AR(ctot()+f.fee)+' ر.س</span></div>'}e.innerHTML=h}
 function ctot(){var t=0;for(var k in S.cart){var x=ck(k);t+=x.d.o[x.o][1]*S.cart[k]}return t}
 function olab(d,o){return d.single?"":AR(d.o[o][0])+" حبة"}
 var KEY="mentu_site_order";
@@ -70,7 +73,7 @@ function draw(){
  if(!ks.length){sh.innerHTML='<div class="mo-h"><b>طلبك</b><button class="mo-x" id="mo-c">×</button></div><p style="text-align:center;padding:30px 0;color:rgba(253,249,244,.6)">السلة فارغة<br>اضغط على + في أي طبق لإضافته</p>';document.getElementById("mo-c").onclick=closeCart;return}
  var h='<div class="mo-h"><b>طلبك</b><button class="mo-x" id="mo-c">×</button></div>';
  ks.forEach(function(k,i){var x=ck(k),d=x.d;h+='<div class="mo-it"><img src="'+d.s+'"><span>'+d.n+(d.single?"":" - "+olab(d,x.o))+'<br><b style="color:#f5b72e;font-size:12.5px">'+AR(d.o[x.o][1]*S.cart[k])+' ر.س</b></span><div class="mo-q"><button data-i="'+i+'" data-d="1">+</button><b>'+AR(S.cart[k])+'</b><button data-i="'+i+'" data-d="-1">−</button></div></div>'});
- h+='<div style="display:flex;justify-content:space-between;padding:12px 0;font-weight:700;color:#f5b72e"><span>مجموع الطلب</span><span>'+AR(ctot())+' ر.س</span></div><div class="mo-lb">الاسم</div><input class="mo-in" id="mo-n" type="text" autocomplete="name" value="'+esc(S.u.n)+'"><div class="mo-lb">رقم الجوال</div><input class="mo-in" id="mo-p" type="tel" inputmode="numeric" placeholder="05XXXXXXXX" autocomplete="tel" value="'+esc(S.u.p)+'"><div class="mo-lb">اختر الفرع</div><div class="mo-br"><div data-b="y" class="'+(S.br=="y"?"on":"")+'">'+BR.y.n+'</div><div data-b="a" class="'+(S.br=="a"?"on":"")+'">'+BR.a.n+'</div></div>';
+ h+='<div style="display:flex;justify-content:space-between;padding:12px 0;font-weight:700;color:#f5b72e"><span>مجموع الطلب</span><span>'+AR(ctot())+' ر.س</span></div><div id="mo-fee"></div><div class="mo-lb">الاسم</div><input class="mo-in" id="mo-n" type="text" autocomplete="name" value="'+esc(S.u.n)+'"><div class="mo-lb">رقم الجوال</div><input class="mo-in" id="mo-p" type="tel" inputmode="numeric" placeholder="05XXXXXXXX" autocomplete="tel" value="'+esc(S.u.p)+'"><div class="mo-lb">اختر الفرع</div><div class="mo-br"><div data-b="y" class="'+(S.br=="y"?"on":"")+'">'+BR.y.n+'</div><div data-b="a" class="'+(S.br=="a"?"on":"")+'">'+BR.a.n+'</div></div>';
  h+='<div class="mo-lb">موقع التوصيل (اضغط على الخريطة أو حرّك الدبوس)</div><button class="mo-loc" id="mo-loc" type="button">📍 تحديد موقعي الحالي</button><div class="mo-map" id="mo-map"></div><div class="mo-st" id="mo-st">'+(S.loc?"الموقع المحدد: "+S.loc.lat.toFixed(5)+" ، "+S.loc.lng.toFixed(5):"")+'</div>';
  h+='<div style="text-align:center;font-size:12.5px;color:#f5b72e;padding:6px 0">كل ٥ طلبات فوق ٦٠ ريال، السادس مشكل حجازي ٤٠ حبة مجاناً</div>';
  h+='<div class="mo-er" id="mo-er"></div><button class="mo-go" id="mo-go">إرسال الطلب عبر واتساب ✆</button><div style="text-align:center"><button class="mo-cl" id="mo-clr">تفريغ السلة</button></div>';
@@ -83,7 +86,7 @@ function draw(){
  document.getElementById("mo-n").oninput=function(){S.u.n=this.value;save()};
  document.getElementById("mo-p").oninput=function(){S.u.p=this.value;save()};
  document.getElementById("mo-loc").onclick=function(){locate(1)};
- initMap()}
+ updFee();initMap()}
 var esc=function(x){return String(x).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
 var setPin=null;
 function locate(manual){var s=document.getElementById("mo-st");if(!navigator.geolocation){if(s)s.textContent="المتصفح لا يدعم تحديد الموقع، اضغط على الخريطة";return}
@@ -100,10 +103,10 @@ function send(){var er=document.getElementById("mo-er");
  var DBU="https://cdqqxjbadgivujibehzt.supabase.co",DBK="sb_publishable_dpe06zJ0jZ68-ZEVonhqAQ_7DkEXOjS",done=false;
  function go(r){if(done)return;done=true;window._mob=0;compose(r)}
  try{var ac=window.AbortController?new AbortController():null;setTimeout(function(){if(ac)ac.abort();go(null)},5000);
- fetch(DBU+"/rest/v1/rpc/place_order",{method:"POST",headers:{"apikey":DBK,"Content-Type":"application/json"},body:JSON.stringify({p_name:nm,p_phone:ph,p_branch:S.br=="a"?"aqiq":"yarmouk",p_total:ctot(),p_items:items,p_lat:S.loc.lat,p_lng:S.loc.lng}),signal:ac?ac.signal:undefined}).then(function(x){return x.ok?x.json():null}).then(go,function(){go(null)})}catch(e){go(null)}
+ fetch(DBU+"/rest/v1/rpc/place_order",{method:"POST",headers:{"apikey":DBK,"Content-Type":"application/json"},body:JSON.stringify({p_name:nm,p_phone:ph,p_branch:S.br=="a"?"aqiq":"yarmouk",p_total:ctot(),p_items:items,p_lat:S.loc.lat,p_lng:S.loc.lng,p_fee:(dfee()||{fee:0}).fee,p_km:+(dfee()||{km:0}).km.toFixed(2)}),signal:ac?ac.signal:undefined}).then(function(x){return x.ok?x.json():null}).then(go,function(){go(null)})}catch(e){go(null)}
  function compose(r){
  var l=["السلام عليكم، أرغب بطلب من "+BR[S.br].n+":",""];
- Object.keys(S.cart).forEach(function(k){if(S.cart[k]>0){var x=ck(k),d=x.d;l.push("- "+d.n+(d.single?"":" ("+olab(d,x.o)+")")+" × "+AR(S.cart[k])+" = "+AR(d.o[x.o][1]*S.cart[k])+" ر.س")}});l.push("","مجموع الطلب: "+AR(ctot())+" ر.س");
+ Object.keys(S.cart).forEach(function(k){if(S.cart[k]>0){var x=ck(k),d=x.d;l.push("- "+d.n+(d.single?"":" ("+olab(d,x.o)+")")+" × "+AR(S.cart[k])+" = "+AR(d.o[x.o][1]*S.cart[k])+" ر.س")}});var DF=dfee()||{km:0,fee:0};l.push("","مجموع الطلب: "+AR(ctot())+" ر.س","رسوم التوصيل ("+AR(DF.km.toFixed(1))+" كم): "+(DF.fee?AR(DF.fee)+" ر.س":"مجاني"),"الإجمالي مع التوصيل: "+AR(ctot()+DF.fee)+" ر.س");
  l.push("","الاسم: "+nm,"رقم الجوال: "+ph);l.push("","موقع التوصيل: https://maps.google.com/?q="+S.loc.lat.toFixed(6)+","+S.loc.lng.toFixed(6),"","(طلب من موقع منتو اكسبرس)");
  if(r&&r.reward)l.push("","عرض الولاء: هذا الطلب السادس، مشكل حجازي ٤٠ حبة مجاناً");else if(r&&r.qualifying)l.push("","عرض الولاء: طلب رقم "+AR(r.qual_no)+(r.to_next>0?" (باقي "+AR(r.to_next)+" طلبات للمشكل الحجازي المجاني)":" (الطلب القادم مشكل حجازي ٤٠ حبة مجاناً)"));
  window.location.href="https://wa.me/"+BR[S.br].w+"?text="+encodeURIComponent(l.join("\n"))}}
@@ -112,7 +115,7 @@ function initMap(){function run(){var el=document.getElementById("mo-map");if(!e
  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap"}).addTo(m);
  var mk=null;
  function put(ll){if(mk)mk.setLatLng(ll);else{mk=L.marker(ll,{draggable:true}).addTo(m);mk.on("dragend",function(){var q=mk.getLatLng();setPin({lat:q.lat,lng:q.lng},"الموقع المحدد: ")})}}
- setPin=function(ll,t,fly){S.loc={lat:ll.lat,lng:ll.lng};save();put(ll);if(fly)m.setView(ll,17);var s=document.getElementById("mo-st");if(s)s.textContent=t+S.loc.lat.toFixed(5)+" ، "+S.loc.lng.toFixed(5);var e=document.getElementById("mo-er");if(e)e.textContent=""};
+ setPin=function(ll,t,fly){S.loc={lat:ll.lat,lng:ll.lng};save();updFee();put(ll);if(fly)m.setView(ll,17);var s=document.getElementById("mo-st");if(s)s.textContent=t+S.loc.lat.toFixed(5)+" ، "+S.loc.lng.toFixed(5);var e=document.getElementById("mo-er");if(e)e.textContent=""};
  if(S.loc)put(S.loc);
  m.on("click",function(e){setPin(e.latlng,"الموقع المحدد: ")});
  setTimeout(function(){m.invalidateSize()},200);
