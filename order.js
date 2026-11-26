@@ -90,6 +90,7 @@ function locate(manual){var s=document.getElementById("mo-st");if(!navigator.geo
  if(s)s.textContent="جاري تحديد موقعك الحالي...";
  navigator.geolocation.getCurrentPosition(function(p){var ll={lat:p.coords.latitude,lng:p.coords.longitude};if(setPin)setPin(ll,"موقعك الحالي: ",1);else{S.loc=ll;save();var s2=document.getElementById("mo-st");if(s2)s2.textContent="موقعك الحالي: "+ll.lat.toFixed(5)+" ، "+ll.lng.toFixed(5)}},function(){var s2=document.getElementById("mo-st");if(s2&&!S.loc)s2.textContent="تعذر تحديد موقعك. فعّل الموقع في المتصفح أو اضغط على الخريطة"},{enableHighAccuracy:true,timeout:15000,maximumAge:0})}
 function send(){var er=document.getElementById("mo-er");
+ var rh=(new Date().getUTCHours()+3)%24;if(rh>=1&&rh<13){er.textContent="المطعم مغلق حالياً، نفتح الساعة ١ ظهراً. لا يمكن إرسال الطلب الآن، تقدر تتصفح القائمة وتجهز السلة.";return}
  var nm=(S.u.n||"").trim(),ph=(S.u.p||"").replace(/[\s\-]/g,"").replace(/[٠-٩]/g,function(d){return "٠١٢٣٤٥٦٧٨٩".indexOf(d)});
  if(!nm){er.textContent="الرجاء إدخال الاسم";return}
  if(!/^05\d{8}$/.test(ph)){er.textContent="الرجاء إدخال رقم جوال صحيح من ١٠ أرقام يبدأ بـ 05";return}
