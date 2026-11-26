@@ -57,11 +57,11 @@ function scan(){
 function drawPick(){var d=PK,sh=document.getElementById("mo-sh");
  var h='<div class="mo-h"><b>'+d.n+'</b><button class="mo-x" id="mo-c">×</button></div><div class="mo-br" style="flex-wrap:wrap;margin-top:14px">';
  d.o.forEach(function(x,i){h+='<div data-o="'+i+'" class="'+(i==pso?"on":"")+'" style="flex:1 1 30%">'+AR(x[0])+' حبة<br><b>'+AR(x[1])+' ر.س</b></div>'});
- h+='</div><div class="mo-q" style="justify-content:center;margin:18px 0;font-size:20px;position:relative"><button data-q="1">+</button><b>'+AR(pq)+'</b><button data-q="-1">−</button><button class="mo-del" id="mo-tr" aria-label="حذف من السلة" style="position:absolute;left:18px"'+(S.cart[d.id+"_"+pso]?"":" disabled")+'><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 10v7M14 10v7"/></svg></button></div><button class="mo-go" id="mo-ad">أضف إلى السلة - '+AR(d.o[pso][1]*pq)+' ر.س</button>';
+ h+='</div><div class="mo-q" style="justify-content:center;margin:18px 0;font-size:20px;position:relative"><button data-q="1">+</button><b>'+AR(pq)+'</b><button data-q="-1">−</button><button class="mo-del" id="mo-tr" aria-label="حذف من السلة" style="position:absolute;left:18px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 10v7M14 10v7"/></svg></button></div><button class="mo-go" id="mo-ad">أضف إلى السلة - '+AR(d.o[pso][1]*pq)+' ر.س</button>';
  sh.innerHTML=h;document.getElementById("mo-c").onclick=closeCart;
  sh.querySelectorAll("[data-o]").forEach(function(e){e.onclick=function(){pso=+e.getAttribute("data-o");drawPick()}});
  sh.querySelectorAll("[data-q]").forEach(function(e){e.onclick=function(){pq=Math.max(1,pq+(+e.getAttribute("data-q")));drawPick()}});
- document.getElementById("mo-tr").onclick=function(){var k=d.id+"_"+pso;if(!S.cart[k])return;delete S.cart[k];save();paint();closeCart()};
+ document.getElementById("mo-tr").onclick=function(){var k=d.id+"_"+pso;if(S.cart[k]){delete S.cart[k];save();paint()}pq=1;pso=0;closeCart()};
  document.getElementById("mo-ad").onclick=function(){addC(d.id,pq,pso);closeCart()}}
 function paint(){
  document.querySelectorAll(".mo-add").forEach(function(b){var q=0;for(var k in S.cart)if(k.split("_")[0]==b.getAttribute("data-id"))q+=S.cart[k];var cn="mo-add"+(q?" on":""),tx=q?AR(q):"+";if(b.className!=cn)b.className=cn;if(b.textContent!=tx)b.textContent=tx});
