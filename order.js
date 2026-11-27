@@ -5,8 +5,8 @@ M.forEach(function(d){BYID[d.id]=d;if(d.alt)BYALT[d.alt]=d});
 function AR(n){return String(n).replace(/\d/g,function(d){return "٠١٢٣٤٥٦٧٨٩"[d]})}
 function ck(k){var a=String(k).split("_");return {d:BYID[a[0]],o:+a[1]||0}}
 var BRC={y:[24.8120591,46.7989583],a:[24.7852511,46.632454]};
-function dfee(){if(!S.br||!S.loc)return null;var c=BRC[S.br],R=6371,r=Math.PI/180,dl=(S.loc.lat-c[0])*r,dn=(S.loc.lng-c[1])*r,x=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(c[0]*r)*Math.cos(S.loc.lat*r)*Math.sin(dn/2)*Math.sin(dn/2),km=2*R*Math.asin(Math.sqrt(x));return {km:km,fee:km>3?10:0,out:km>7}}
-function updFee(){var e=document.getElementById("mo-fee");if(!e)return;var f=dfee(),h='<div style="font-size:12.5px;opacity:.75;padding:2px 0 6px">التوصيل مجاني حتى ٣ كم، وأبعد من ذلك ١٠ ر.س</div>';if(f&&f.out){h='<div style="padding:10px 12px;margin:6px 0;border:1px solid #e0594b;border-radius:10px;color:#ff9b8f;font-size:14px;line-height:1.6">موقعك خارج نطاق التوصيل ('+AR(f.km.toFixed(1))+' كم). أقصى مسافة للتوصيل ٧ كم من الفرع. اختر موقعاً أقرب أو غيّر الفرع.</div>'}else if(f){h='<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:14px"><span>رسوم التوصيل ('+AR(f.km.toFixed(1))+' كم)</span><span>'+(f.fee?AR(f.fee)+' ر.س':"مجاني")+'</span></div><div style="display:flex;justify-content:space-between;padding:6px 0 10px;font-weight:700;color:#f5b72e"><span>الإجمالي مع التوصيل</span><span>'+AR(ctot()+f.fee)+' ر.س</span></div>'}e.innerHTML=h}
+function dfee(){if(!S.br||!S.loc)return null;var c=BRC[S.br],R=6371,r=Math.PI/180,dl=(S.loc.lat-c[0])*r,dn=(S.loc.lng-c[1])*r,x=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(c[0]*r)*Math.cos(S.loc.lat*r)*Math.sin(dn/2)*Math.sin(dn/2),km=2*R*Math.asin(Math.sqrt(x));return {km:km,fee:km>3?10:0,out:km>5}}
+function updFee(){var e=document.getElementById("mo-fee");if(!e)return;var f=dfee(),h='<div style="font-size:12.5px;opacity:.75;padding:2px 0 6px">التوصيل مجاني حتى ٣ كم، وأبعد من ذلك ١٠ ر.س</div>';if(f&&f.out){h='<div style="padding:10px 12px;margin:6px 0;border:1px solid #e0594b;border-radius:10px;color:#ff9b8f;font-size:14px;line-height:1.6">موقعك خارج نطاق التوصيل ('+AR(f.km.toFixed(1))+' كم). أقصى مسافة للتوصيل ٥ كم من الفرع. اختر موقعاً أقرب أو غيّر الفرع.</div>'}else if(f){h='<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:14px"><span>رسوم التوصيل ('+AR(f.km.toFixed(1))+' كم)</span><span>'+(f.fee?AR(f.fee)+' ر.س':"مجاني")+'</span></div><div style="display:flex;justify-content:space-between;padding:6px 0 10px;font-weight:700;color:#f5b72e"><span>الإجمالي مع التوصيل</span><span>'+AR(ctot()+f.fee)+' ر.س</span></div>'}e.innerHTML=h}
 function ctot(){var t=0;for(var k in S.cart){var x=ck(k);t+=x.d.o[x.o][1]*S.cart[k]}return t}
 function olab(d,o){return d.single?"":AR(d.o[o][0])+" حبة"}
 var KEY="mentu_site_order";
@@ -104,7 +104,7 @@ function send(){var er=document.getElementById("mo-er");
  if(!/^05\d{8}$/.test(ph)){er.textContent="الرجاء إدخال رقم جوال صحيح من ١٠ أرقام يبدأ بـ 05";return}
  if(!S.br){er.textContent="الرجاء اختيار الفرع";return}
  if(!S.loc){er.textContent="الرجاء تحديد موقع التوصيل على الخريطة";return}
- var DO=dfee();if(DO&&DO.out){er.textContent="موقعك خارج نطاق التوصيل (أكثر من ٧ كم من الفرع). اختر موقعاً أقرب أو غيّر الفرع.";return}
+ var DO=dfee();if(DO&&DO.out){er.textContent="موقعك خارج نطاق التوصيل (أكثر من ٥ كم من الفرع). اختر موقعاً أقرب أو غيّر الفرع.";return}
  if(window._mob)return;window._mob=1;var items=[];Object.keys(S.cart).forEach(function(k){if(S.cart[k]>0){var x=ck(k);items.push({n:x.d.n,o:x.d.single?"":x.d.o[x.o][0],q:S.cart[k],s:x.d.o[x.o][1]*S.cart[k]})}});
  var DBU="https://cdqqxjbadgivujibehzt.supabase.co",DBK="sb_publishable_dpe06zJ0jZ68-ZEVonhqAQ_7DkEXOjS",done=false;
  function go(r){if(done)return;done=true;window._mob=0;compose(r)}
