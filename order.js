@@ -98,7 +98,7 @@ function locate(manual){var s=document.getElementById("mo-st");if(!navigator.geo
  function bad(e){var s2=document.getElementById("mo-st");if(s2&&(!S.loc||manual))s2.textContent=(e&&e.code===1)?"إذن الموقع مرفوض لهذا الموقع. فعّله من إعدادات المتصفح (على الآيفون: الإعدادات > الخصوصية > خدمات الموقع)، أو اضغط على الخريطة لتحديد موقعك":"تعذر الحصول على موقعك. تأكد أن خدمة الموقع شغالة أو اضغط على الخريطة لتحديد موقعك"}
  navigator.geolocation.getCurrentPosition(ok,function(e){if(e&&e.code===1){bad(e);return}navigator.geolocation.getCurrentPosition(ok,bad,{enableHighAccuracy:false,timeout:15000,maximumAge:600000})},{enableHighAccuracy:true,timeout:8000,maximumAge:0})}
 function send(){var er=document.getElementById("mo-er");
- var rh=(new Date().getUTCHours()+3)%24;if(rh>=2&&rh<13){er.textContent="المطعم مغلق حالياً، نفتح الساعة ١ ظهراً. لا يمكن إرسال الطلب الآن، تقدر تتصفح القائمة وتجهز السلة.";return}
+ var rh=(new Date().getUTCHours()+3)%24;if(rh>=1&&rh<13){er.textContent="المطعم مغلق حالياً، نفتح الساعة ١ ظهراً. لا يمكن إرسال الطلب الآن، تقدر تتصفح القائمة وتجهز السلة.";return}
  var nm=(S.u.n||"").trim(),ph=(S.u.p||"").replace(/[\s\-]/g,"").replace(/[٠-٩]/g,function(d){return "٠١٢٣٤٥٦٧٨٩".indexOf(d)});
  if(!nm){er.textContent="الرجاء إدخال الاسم";return}
  if(!/^05\d{8}$/.test(ph)){er.textContent="الرجاء إدخال رقم جوال صحيح من ١٠ أرقام يبدأ بـ 05";return}
@@ -152,5 +152,5 @@ try{if(!S.loc||S.src!=="manual")locate()}catch(e){}
 
 ;(function(){var css=document.createElement("style");css.textContent=".mo-promo{margin:14px auto 0;max-width:1100px;width:calc(100% - 28px);box-sizing:border-box;text-align:center;direction:rtl;background:rgba(245,183,46,.12);border:1px solid #f5b72e;border-radius:14px;padding:12px 16px;color:#f5b72e;font-weight:700;font-size:16px;line-height:1.6}.mo-promo small{display:block;font-weight:400;font-size:13px;color:inherit;opacity:.85}";document.head.appendChild(css);
 function put(){if(document.querySelector(".mo-promo"))return;var h=document.querySelector(".mentu-heroimg");if(!h||!h.parentNode)return;var d=document.createElement("div");d.className="mo-promo";d.innerHTML="كل ٥ طلبات فوق ٦٠ ريال<small>الطلب السادس مشكل حجازي ٤٠ حبة مجاناً</small>";h.parentNode.insertBefore(d,h.nextSibling)}
-function fh(){var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),n;while(n=w.nextNode()){if(n.nodeValue.indexOf("حتى ١ صباحاً")>-1)n.nodeValue=n.nodeValue.replace("حتى ١ صباحاً","حتى ٢ صباحاً")}}var ft=0;function fq(){if(ft)return;ft=setTimeout(function(){ft=0;fh()},150)}
+function fh(){var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),n;while(n=w.nextNode()){if(n.nodeValue.indexOf("حتى ١ صباحاً")>-1)n.nodeValue=n.nodeValue.replace("حتى ١ صباحاً","حتى ١ صباحاً")}}var ft=0;function fq(){if(ft)return;ft=setTimeout(function(){ft=0;fh()},150)}
 put();fh();new MutationObserver(function(){put();fq()}).observe(document.documentElement,{childList:true,subtree:true})})();
