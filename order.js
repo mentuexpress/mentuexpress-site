@@ -59,7 +59,7 @@ function drawPick(){var d=PK,sh=document.getElementById("mo-sh");
  d.o.forEach(function(x,i){h+='<div data-o="'+i+'" class="'+(i==pso?"on":"")+'" style="flex:1 1 30%">'+AR(x[0])+' حبة<br><b>'+AR(x[1])+' ر.س</b></div>'});
  h+='</div><div class="mo-q" style="justify-content:center;margin:18px 0;font-size:20px;position:relative"><button data-q="1">+</button><b>'+AR(pq)+'</b><button data-q="-1">−</button><button class="mo-del" id="mo-tr" aria-label="حذف من السلة" style="position:absolute;left:18px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 10v7M14 10v7"/></svg></button></div><button class="mo-go" id="mo-ad"'+(pq?"":" disabled style=\"opacity:.4;cursor:default\"")+'>'+(pq?"أضف إلى السلة - "+AR(d.o[pso][1]*pq)+" ر.س":"اختر الكمية")+'</button>';
  sh.innerHTML=h;document.getElementById("mo-c").onclick=closeCart;
- sh.querySelectorAll("[data-o]").forEach(function(e){e.onclick=function(){pso=+e.getAttribute("data-o");drawPick()}});
+ sh.querySelectorAll("[data-o]").forEach(function(e){e.onclick=function(){pso=+e.getAttribute("data-o");if(!pq)pq=1;drawPick()}});
  sh.querySelectorAll("[data-q]").forEach(function(e){e.onclick=function(){pq=Math.max(0,pq+(+e.getAttribute("data-q")));drawPick()}});
  document.getElementById("mo-tr").onclick=function(){var k=d.id+"_"+pso;if(S.cart[k]>0){S.cart[k]--;if(S.cart[k]<=0)delete S.cart[k];save();paint()}pq=Math.max(0,pq-1);drawPick()};
  document.getElementById("mo-ad").onclick=function(){if(!pq)return;addC(d.id,pq,pso);closeCart()}}
